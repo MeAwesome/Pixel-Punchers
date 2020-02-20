@@ -1,6 +1,7 @@
 var express = require("express");
 var app = express();
 var serv = require("http").Server(app);
+var io = require("socket.io")(serv,{});
 var port = process.env.PORT;
 
 app.get("/", function(req, res){
@@ -10,7 +11,6 @@ app.use("/public", express.static(__dirname + "/public"));
 
 serv.listen(port || 3000);
 
-var io = require("socket.io")(serv,{});
-//io.on("connection", function(socket){
+io.on("connection", function(socket){
 
-//});
+});
