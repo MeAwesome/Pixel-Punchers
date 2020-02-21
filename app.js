@@ -23,7 +23,7 @@ io.on("connection", function(socket){
 		for(var player = 0; player < players.length; player++){
 			if(players[player].id == socket.id){
 				players.splice(player, 1);
-				socket.broadcast.emit("player_disconnection", socket.id);
+				//socket.broadcast.emit("player_disconnection", socket.id);
 			}
 		}
 	});
