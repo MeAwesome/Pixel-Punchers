@@ -7,6 +7,8 @@ function setup(){
 
 }
 
-socket.on("connected_to_server", () => {
+socket.on("connected_to_server", (player) => {
   console.log("connected");
+  me.setPlayerNumber(player.playerNumber);
+  me.setPlayerNickname(player.nickname);
 });

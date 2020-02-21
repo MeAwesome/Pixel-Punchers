@@ -15,8 +15,9 @@ var players = [];
 
 io.on("connection", function(socket){
 
-	players.push(new Player(socket));
-	socket.emit("connected_to_server");
+	var player = new Player(socket);
+	players.push(player);
+	socket.emit("connected_to_server", player);
 
 	socket.on("disconnect", () => {
 		for(var player = 0; player < players.length; player++){
@@ -35,5 +36,6 @@ io.on("connection", function(socket){
 
 function Player(socket){
 	this.id = socket.id;
-	this.nickname = players.length++;
+	this.playerNumber = players.length++;
+	this.nickname = "Player " + players.length++;
 }
