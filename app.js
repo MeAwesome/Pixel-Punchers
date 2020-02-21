@@ -11,6 +11,29 @@ app.use("/public", express.static(__dirname + "/public"));
 
 serv.listen(port || 3000);
 
+var players = [];
+
 io.on("connection", function(socket){
 
+	players.push(new Player(socket));
+	socket.emit("connected_to_server");
+
+	socket.on("disconnect", () => {
+		for(var player = 0; player < players.length; player++){
+			if(players[player].id == socket.id){
+				players.splice(player, 1);
+				socket.broadcast.emit("player_disconnection", socket.id);
+			}
+		}
+	});
+
+	socket.on("player_update", (data) => {
+
+	});
+
 });
+
+function Player(socket){
+	this.id = socket.id;
+	this.nickname = players.length++;
+}

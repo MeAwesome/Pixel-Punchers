@@ -1,0 +1,18 @@
+{
+  "dimensions":{
+    "width":10,
+    "height":30
+  },
+  "weight":3,
+  "moveset":{
+    "A":{
+      "type":"a_punch",
+      "animations":{
+        "left":[],
+        "right":[],
+        "up":[],
+        "down":[]
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "emitsProjectile":false,
+  "projectileType":false,
+  "dealsDamageToEnemy":true,
+  "damageToEnemy":5,
+  "dealsDamageToSelf":false,
+  "damageToSelf":0,
+  "dealsKnockbackToEnemy":true,
+  "knockbackToEnemy":2,
+  "dealsKnockbackToSelf":false,
+  "knockbackToSelf":0,
+  "cooldown":true,
+  "cooldownTime":0.5
+}
