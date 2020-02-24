@@ -45,5 +45,5 @@ io.on("connection", function(socket){
 function Player(socket){
 	this.id = socket.id;
 	this.playerNumber = players.length;
-	this.nickname = "Player " + players.length + 1;
+	this.nickname = "Player " + (players.length + 1);
 }
