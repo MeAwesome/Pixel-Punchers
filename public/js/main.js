@@ -21,7 +21,6 @@ function setup(){
   gameAreaBuffer.text("X", 980, 160, Color.black, 100, "Arial", "centered");
   gameAreaBuffer.setVisibility(false);
   gameArea.setSize(window.innerWidth, window.innerHeight);
-  gameArea.copyData(gameAreaBuffer, 0, 0, gameArea.canvas.width, gameArea.canvas.height);
   gameArea.setVisibility(true);
   tick();
 }
