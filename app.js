@@ -36,6 +36,10 @@ io.on("connection", function(socket){
 		}
 	});
 
+	socket.on("button_hit", () => {
+		socket.broadcast.emit("player_hit_button");
+	});
+
 	socket.on("player_update", (data) => {
 
 	});

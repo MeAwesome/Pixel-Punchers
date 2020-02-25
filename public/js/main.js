@@ -7,9 +7,10 @@ function onLoad(){
 }
 
 function setup(){
+  gameAreaBuffer.makeBuffer(gameArea);
   gameAreaBuffer.setSize(1280, 720);
   gameAreaBuffer.fill(Color.felicity);
-  gameAreaBuffer.box(100, 100, 100, 100, Color.white);
+  gameAreaBuffer.rectButton("testing", 100, 100, 100, 100, Color.white);
   gameAreaBuffer.box(1080, 100, 100, 100, Color.white);
   gameAreaBuffer.box(100, 500, 100, 100, Color.white);
   gameAreaBuffer.box(1080, 500, 100, 100, Color.white);
@@ -17,6 +18,18 @@ function setup(){
   gameArea.setSize(window.innerWidth, window.innerHeight);
   gameArea.copyData(gameAreaBuffer, 0, 0, gameArea.canvas.width, gameArea.canvas.height);
   gameArea.setVisibility(true);
+  tick();
+}
+
+function tick(){
+  if(gameAreaBuffer.trackingAreas[0].active == true){
+    socket.emit("button_hit");
+    gameAreaBuffer.box(100, 100, 100, 100, Color.red);
+  } else {
+    gameAreaBuffer.box(100, 100, 100, 100, Color.white);
+  }
+  gameArea.copyData(gameAreaBuffer, 0, 0, gameArea.canvas.width, gameArea.canvas.height);
+  window.requestAnimationFrame(tick);
 }
 
 function bindSocketEvents(){
@@ -25,8 +38,28 @@ function bindSocketEvents(){
     me.setPlayerNickname(player.nickname);
     setup();
   });
+
+  socket.on("player_hit_button", () => {
+    gameAreaBuffer.box(100, 100, 100, 100, Color.red);
+  });
 }
 
 window.onload = function(){
   onLoad();
+  window.addEventListener("touchstart", (e) => {
+		e.preventDefault();
+		checkPaintTouches(e);
+	}, false);
+	window.addEventListener("touchmove", (e) => {
+		e.preventDefault();
+		checkPaintTouches(e);
+	}, false);
+	window.addEventListener("touchend", (e) => {
+		e.preventDefault();
+		checkPaintTouches(e);
+	}, false);
+	window.addEventListener("touchcancel", (e) => {
+		e.preventDefault();
+		checkPaintTouches(e);
+	}, false);
 }
