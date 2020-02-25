@@ -3,7 +3,7 @@ var os = require("os");
 var app = express();
 var serv = require("http").Server(app);
 var io = require("socket.io")(serv,{});
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 52470;
 
 app.get("/", function(req, res){
 	res.sendFile(__dirname + "/public/index.html");
@@ -38,6 +38,10 @@ io.on("connection", function(socket){
 
 	socket.on("button_hit", () => {
 		socket.broadcast.emit("player_hit_button");
+	});
+
+	socket.on("button_unhit", () => {
+		socket.broadcast.emit("player_unhit_button");
 	});
 
 	socket.on("player_update", (data) => {

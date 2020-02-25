@@ -4,6 +4,7 @@ function onLoad(){
   me = new Player();
   gameAreaBuffer = new Paint("gameAreaBuffer");
   gameArea = new Paint("gameArea");
+  otherHit = false;
 }
 
 function setup(){
@@ -22,10 +23,13 @@ function setup(){
 }
 
 function tick(){
-  if(gameAreaBuffer.trackingAreas[0].active == true){
-    socket.emit("button_hit");
+  if(gameAreaBuffer.trackingAreas[0].active == true || otherHit == true){
+    if(otherHit == false){
+      socket.emit("button_hit");
+    }
     gameAreaBuffer.box(100, 100, 100, 100, Color.red);
   } else {
+    socket.emit("button_unhit");
     gameAreaBuffer.box(100, 100, 100, 100, Color.white);
   }
   gameArea.copyData(gameAreaBuffer, 0, 0, gameArea.canvas.width, gameArea.canvas.height);
@@ -40,7 +44,11 @@ function bindSocketEvents(){
   });
 
   socket.on("player_hit_button", () => {
-    gameAreaBuffer.box(100, 100, 100, 100, Color.red);
+    otherHit = true;
+  });
+
+  socket.on("player_unhit_button", () => {
+    otherHit = false;
   });
 }
 
