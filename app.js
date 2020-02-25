@@ -7,6 +7,8 @@ var port = process.env.PORT || 52470;
 
 app.get("/", function(req, res){
 	res.sendFile(__dirname + "/public/index.html");
+	res.sendFile(__dirname + "/manifest.json");
+	res.sendFile(__dirname + "/serviceworker.js");
 });
 app.use("/public", express.static(__dirname + "/public"));
 
