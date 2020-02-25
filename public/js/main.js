@@ -10,12 +10,11 @@ function onLoad(){
 function setup(){
   gameAreaBuffer.makeBuffer(gameArea);
   gameAreaBuffer.setSize(1280, 720);
-  gameAreaBuffer.fill(Color.felicity);
-  gameAreaBuffer.circButton("testing", 100, 100, 100, Color.white);
-  gameAreaBuffer.box(1080, 100, 100, Color.white);
-  gameAreaBuffer.box(100, 500, 100, 100, Color.white);
-  gameAreaBuffer.box(1080, 500, 100, 100, Color.white);
-  gameAreaBuffer.text("testing", 200, 200, Color.blue, 50, "Arial");
+  gameAreaBuffer.fill(Color.black);
+  gameAreaBuffer.circButton("A", 1080, 360, 100, Color.white);
+  gameAreaBuffer.text("A", 1080, 360, Color.black, 100, "Arial", "centered");
+  gameAreaBuffer.circButton("B", 980, 560, 100, Color.white);
+  gameAreaBuffer.text("B", 980, 560, Color.black, 100, "Arial", "centered");
   gameAreaBuffer.setVisibility(false);
   gameArea.setSize(window.innerWidth, window.innerHeight);
   gameArea.copyData(gameAreaBuffer, 0, 0, gameArea.canvas.width, gameArea.canvas.height);

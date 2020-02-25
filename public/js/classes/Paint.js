@@ -58,10 +58,10 @@ function Paint(id){
     this._restoreValues();
   }
 
-  this.text = function(text, x, y, color, size, font){
+  this.text = function(text, x, y, color, size, font, alignment){
     this._saveValues();
     this._fillColor(color);
-    this._fillText(text, x, y, size, font);
+    this._fillText(text, x, y, size, font, alignment);
     this._restoreValues();
   }
 
@@ -128,8 +128,13 @@ function Paint(id){
     this.context.fill();
   }
 
-  this._fillText = function(text, x, y, size, font){
+  this._fillText = function(text, x, y, size, font, alignment){
     this.context.font = size + "px " + font;
+    switch(alignment){
+      case "centered":
+        this.context.textAlign = "center";
+        this.context.textBaseline = "middle";
+    }
     this.context.fillText(text, x, y);
   }
 
