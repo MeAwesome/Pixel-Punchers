@@ -51,6 +51,20 @@ function Paint(id){
     this._restoreValues();
   }
 
+  this.circle = function(x, y, r, color){
+    this._saveValues();
+    this._fillColor(color);
+    this._fillCirc(x, y, r);
+    this._restoreValues();
+  }
+
+  this.text = function(text, x, y, color, size, font){
+    this._saveValues();
+    this._fillColor(color);
+    this._fillText(text, x, y, size, font);
+    this._restoreValues();
+  }
+
   this.rectButton = function(id, x, y, w, h, color){
     this.box(x, y, w, h, color);
     this.trackingAreas.push({
@@ -64,6 +78,22 @@ function Paint(id){
         y:y,
         width:w,
         height:h
+      }
+    });
+  }
+
+  this.circButton = function(id, x, y, r, color){
+    this.circle(x, y, r, color);
+    this.trackingAreas.push({
+      id:id,
+      type:"circle",
+      active:false,
+      canHold:true,
+      pressed:false,
+      region:{
+        x:x,
+        y:y,
+        radius:r
       }
     });
   }
@@ -90,6 +120,17 @@ function Paint(id){
 
   this._fillRect = function(x, y, w, h){
     this.context.fillRect(x, y, w, h);
+  }
+
+  this._fillCirc = function(x, y, r){
+    this.context.beginPath();
+    this.context.arc(x, y, r, 0, 2 * Math.PI);
+    this.context.fill();
+  }
+
+  this._fillText = function(text, x, y, size, font){
+    this.context.font = size + "px " + font;
+    this.context.fillText(text, x, y);
   }
 
   this._testButtonClicks = function(e){
@@ -124,6 +165,34 @@ function Paint(id){
             }
           }
           break;
+        case "circle":
+        for(var t = 0; t < e.touches.length; t++){
+          var r = this.trackingAreas[b].region.radius;
+          var x1 = this.trackingAreas[b].region.x - r;
+          var y1 = this.trackingAreas[b].region.y - r;
+          var x2 = this.trackingAreas[b].region.x + r;
+          var y2 = this.trackingAreas[b].region.y + r;
+          var touchX = e.touches[t].clientX;
+          var touchY = e.touches[t].clientY;
+          var widthRatio = 1;
+          var heightRatio = 1;
+          if(this.isBuffer){
+            widthRatio = this.isBufferFor.canvas.width / this.canvas.width;
+            heightRatio = this.isBufferFor.canvas.height / this.canvas.height;
+          }
+          if(touchX >= x1 * widthRatio && touchX <= x2 * widthRatio && touchY >= y1 * heightRatio && touchY <= y2 * heightRatio){
+            if(this.trackingAreas[b].canHold == true){
+              this.trackingAreas[b].active = true;
+              this.trackingAreas[b].pressed = true;
+            } else {
+              if(this.trackingAreas[b].pressed = true){
+                this.trackingAreas[b].active = false;
+              } else {
+                this.trackingAreas[b].active = true;
+              }
+            }
+          }
+        }
         default:
           break;
       }

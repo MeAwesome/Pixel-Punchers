@@ -11,10 +11,11 @@ function setup(){
   gameAreaBuffer.makeBuffer(gameArea);
   gameAreaBuffer.setSize(1280, 720);
   gameAreaBuffer.fill(Color.felicity);
-  gameAreaBuffer.rectButton("testing", 100, 100, 100, 100, Color.white);
-  gameAreaBuffer.box(1080, 100, 100, 100, Color.white);
+  gameAreaBuffer.circButton("testing", 100, 100, 100, Color.white);
+  gameAreaBuffer.box(1080, 100, 100, Color.white);
   gameAreaBuffer.box(100, 500, 100, 100, Color.white);
   gameAreaBuffer.box(1080, 500, 100, 100, Color.white);
+  gameAreaBuffer.text("testing", 200, 200, Color.blue, 50, "Arial");
   gameAreaBuffer.setVisibility(false);
   gameArea.setSize(window.innerWidth, window.innerHeight);
   gameArea.copyData(gameAreaBuffer, 0, 0, gameArea.canvas.width, gameArea.canvas.height);
@@ -27,10 +28,10 @@ function tick(){
     if(otherHit == false){
       socket.emit("button_hit");
     }
-    gameAreaBuffer.box(100, 100, 100, 100, Color.red);
+    gameAreaBuffer.circle(100, 100, 100, Color.red);
   } else {
     socket.emit("button_unhit");
-    gameAreaBuffer.box(100, 100, 100, 100, Color.white);
+    gameAreaBuffer.circle(100, 100, 100, Color.white);
   }
   gameArea.copyData(gameAreaBuffer, 0, 0, gameArea.canvas.width, gameArea.canvas.height);
   window.requestAnimationFrame(tick);
