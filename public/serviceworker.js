@@ -6,7 +6,7 @@ const FILES_TO_CACHE = [
 
 if("serviceWorker" in navigator){
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/public/serviceworker.js", {scope:'/'})
+    navigator.serviceWorker.register("/public/serviceworker.js")
       .then((reg) => {
         registration = reg;
       }).catch(function(err){
