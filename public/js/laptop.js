@@ -34,16 +34,16 @@ function bindSocketEvents(){
   socket.on("player_input", (button) => {
     switch(button){
       case "A":
-        x++;
+        x+=5;
         break;
       case "B":
-        y++;
+        y+=5;
         break;
       case "Y":
-        x--;
+        x-=5;
         break;
       case "X":
-        y--;
+        y-=5;
         break;
       default:
         break;
