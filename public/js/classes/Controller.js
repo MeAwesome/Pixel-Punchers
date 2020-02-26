@@ -12,6 +12,7 @@ function Controller(type){
       this.color = undefined;
       this.type = type;
       this.paint = undefined;
+      this.previousValue = false;
 
       this.setId = function(id){
         this.id = id;
@@ -69,6 +70,18 @@ function Controller(type){
       }
 
       this.pressed = function(){
+        var state = this.paint.getButtonState(this.id);
+        if(this.previousValue != state && state == true){
+          this.previousValue = state;
+          return true;
+        } else {
+          this.previousValue = state;
+          return false;
+        }
+      }
+
+      this.held = function(){
+        this.previousValue = this.paint.getButtonState(this.id);
         return this.paint.getButtonState(this.id);
       }
       break;

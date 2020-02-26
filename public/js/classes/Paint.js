@@ -88,7 +88,7 @@ function Paint(id){
       type:"rectangle",
       active:false,
       canHold:true,
-      pressed:false,
+      touchNums:[],
       region:{
         x:x,
         y:y,
@@ -104,8 +104,7 @@ function Paint(id){
       id:id,
       type:"circle",
       active:false,
-      canHold:true,
-      pressed:false,
+      canHold:false,
       touchNums:[],
       region:{
         x:x,
@@ -187,16 +186,7 @@ function Paint(id){
             }
             if(touchX >= x1 * widthRatio && touchX <= x2 * widthRatio && touchY >= y1 * heightRatio && touchY <= y2 * heightRatio){
               this.trackingAreas[b].touchNums.push(t);
-              if(this.trackingAreas[b].canHold == true){
-                this.trackingAreas[b].active = true;
-                this.trackingAreas[b].pressed = true;
-              } else {
-                if(this.trackingAreas[b].pressed = true){
-                  this.trackingAreas[b].active = false;
-                } else {
-                  this.trackingAreas[b].active = true;
-                }
-              }
+              this.trackingAreas[b].active = true;
             }
           }
           break;
@@ -217,16 +207,7 @@ function Paint(id){
           }
           if(touchX >= x1 * widthRatio && touchX <= x2 * widthRatio && touchY >= y1 * heightRatio && touchY <= y2 * heightRatio){
             this.trackingAreas[b].touchNums.push(t);
-            if(this.trackingAreas[b].canHold == true){
-              this.trackingAreas[b].active = true;
-              this.trackingAreas[b].pressed = true;
-            } else {
-              if(this.trackingAreas[b].pressed = true){
-                this.trackingAreas[b].active = false;
-              } else {
-                this.trackingAreas[b].active = true;
-              }
-            }
+            this.trackingAreas[b].active = true;
           }
         }
         default:

@@ -26,4 +26,8 @@ function bindSocketEvents(){
   socket.on("connected_to_server", (player) => {
     setup();
   });
+
+  socket.on("player_input", (button) => {
+    console.log(button);
+  });
 }

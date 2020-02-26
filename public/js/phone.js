@@ -35,6 +35,9 @@ function setup(){
 function tick(){
   drawController();
   if(button_a.pressed()){
+    socket.emit("button_hit", "A");
+  }
+  if(button_a.held()){
     button_a.setColor(Color.green);
     button_a.setLabelColor(Color.white);
   } else {
@@ -42,6 +45,9 @@ function tick(){
     button_a.setLabelColor(Color.black);
   }
   if(button_b.pressed()){
+    socket.emit("button_hit", "B");
+  }
+  if(button_b.held()){
     button_b.setColor(Color.red);
     button_b.setLabelColor(Color.white);
   } else {
@@ -49,6 +55,9 @@ function tick(){
     button_b.setLabelColor(Color.black);
   }
   if(button_y.pressed()){
+    socket.emit("button_hit", "Y");
+  }
+  if(button_y.held()){
     button_y.setColor(Color.yellow);
     button_y.setLabelColor(Color.white);
   } else {
@@ -56,6 +65,9 @@ function tick(){
     button_y.setLabelColor(Color.black);
   }
   if(button_x.pressed()){
+    socket.emit("button_hit", "X");
+  }
+  if(button_x.held()){
     button_x.setColor(Color.blue);
     button_x.setLabelColor(Color.white);
   } else {
