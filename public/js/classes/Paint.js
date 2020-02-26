@@ -41,6 +41,14 @@ function Paint(id){
     }
   }
 
+  this.getButtonTouches = function(id){
+    for(var t = 0; t < this.trackingAreas.length; t++){
+      if(this.trackingAreas[t].id == id){
+        return this.trackingAreas[t].touchNums;
+      }
+    }
+  }
+
   this.clear = function(){
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
@@ -98,6 +106,7 @@ function Paint(id){
       active:false,
       canHold:true,
       pressed:false,
+      touchNums:[],
       region:{
         x:x,
         y:y,
@@ -160,6 +169,7 @@ function Paint(id){
   this._testButtonClicks = function(e){
     for(var b = 0; b < this.trackingAreas.length; b++){
       this.trackingAreas[b].active = false;
+      this.trackingAreas[b].touchNums = [];
       switch(this.trackingAreas[b].type){
         case "rectangle":
           for(var t = 0; t < e.touches.length; t++){
@@ -176,6 +186,7 @@ function Paint(id){
               heightRatio = this.isBufferFor.canvas.height / this.canvas.height;
             }
             if(touchX >= x1 * widthRatio && touchX <= x2 * widthRatio && touchY >= y1 * heightRatio && touchY <= y2 * heightRatio){
+              this.trackingAreas[b].touchNums.push(t);
               if(this.trackingAreas[b].canHold == true){
                 this.trackingAreas[b].active = true;
                 this.trackingAreas[b].pressed = true;
@@ -205,6 +216,7 @@ function Paint(id){
             heightRatio = this.isBufferFor.canvas.height / this.canvas.height;
           }
           if(touchX >= x1 * widthRatio && touchX <= x2 * widthRatio && touchY >= y1 * heightRatio && touchY <= y2 * heightRatio){
+            this.trackingAreas[b].touchNums.push(t);
             if(this.trackingAreas[b].canHold == true){
               this.trackingAreas[b].active = true;
               this.trackingAreas[b].pressed = true;

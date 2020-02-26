@@ -72,5 +72,64 @@ function Controller(type){
         return this.paint.getButtonState(this.id);
       }
       break;
+    case "joystick":
+      this.x = undefined;
+      this.y = undefined;
+      this.outerRadius = undefined;
+      this.innerRadius = undefined;
+      this.id = undefined;
+      this.outerColor = undefined;
+      this.innerColor = undefined;
+      this.type = type;
+      this.paint = undefined;
+
+      this.setId = function(id){
+        this.id = id;
+      }
+
+      this.setPosition = function(x, y){
+        this.x = x;
+        this.y = y;
+      }
+
+      this.setOuterRadius = function(r){
+        this.outerRadius = r;
+      }
+
+      this.setInnerRadius = function(r){
+        this.innerRadius = r;
+      }
+
+      this.setOuterColor = function(c){
+        this.outerColor = c;
+      }
+
+      this.setInnerColor = function(c){
+        this.innerColor = c;
+      }
+
+      this.setData = function(id, x, y, or, ir, oc, ic){
+        this.setId(id);
+        this.setPosition(x, y);
+        this.setOuterRadius(or);
+        this.setInnerRadius(ir);
+        this.setOuterColor(oc);
+        this.setInnerColor(ic);
+      }
+
+      this.draw = function(paint){
+        this.paint = paint;
+        this.paint.circButton(this.id, this.x, this.y, this.outerRadius, this.outerColor);
+        if(this.pressed()){
+          this.paint.circle(touches[this.paint.getButtonTouches(this.id)].x, touches[this.paint.getButtonTouches(this.id)].y, this.innerRadius, this.innerColor);
+        } else {
+          this.paint.circle(this.x, this.y, this.innerRadius, this.innerColor);
+        }
+      }
+
+      this.pressed = function(){
+        return this.paint.getButtonState(this.id);
+      }
+      break;
   }
 }

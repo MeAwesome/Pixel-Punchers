@@ -1,6 +1,7 @@
 function onLoad(){
   socket = io();
   bindSocketEvents();
+  touches = [];
   me = new Player();
   game = new Paint("game");
   gameDisplay = new Paint("gameDisplay");
@@ -8,6 +9,7 @@ function onLoad(){
   button_b = new Controller("circle-button");
   button_y = new Controller("circle-button");
   button_x = new Controller("circle-button");
+  left_joystick = new Controller("joystick");
 }
 
 function setup(){
@@ -21,6 +23,7 @@ function setup(){
   button_y.setLabel("Y", 100, "Arial", Color.black);
   button_x.setData("X", 980, 160, 100, Color.white);
   button_x.setLabel("X", 100, "Arial", Color.black);
+  left_joystick.setData("LS", 320, 360, 300, 100, Color.white, Color.black);
   game.setVisibility(false);
   gameDisplay.setSize(window.innerWidth, window.innerHeight);
   gameDisplay.setVisibility(true);
@@ -67,6 +70,7 @@ function drawController(){
   button_b.draw(game);
   button_y.draw(game);
   button_x.draw(game);
+  left_joystick.draw(game);
 }
 
 function bindSocketEvents(){
@@ -75,6 +79,17 @@ function bindSocketEvents(){
     me.setPlayerNickname(player.nickname);
     setup();
   });
+}
+
+function touchesToCoords(e){
+  var widthRatio = game.canvas.width / gameDisplay.canvas.width;
+  var heightRatio = game.canvas.height / gameDisplay.canvas.height;
+  for(var t = 0; t < e.touches.length; t++){
+    touches[t] = {
+      x:e.touches[t].clientX * widthRatio,
+      y:e.touches[t].clientY * heightRatio
+    };
+  }
 }
 
 window.onload = function(){
@@ -89,18 +104,22 @@ window.onload = function(){
   });
   window.addEventListener("touchstart", (e) => {
 		e.preventDefault();
+    touchesToCoords(e);
 		checkPaintTouches(e);
 	}, false);
 	window.addEventListener("touchmove", (e) => {
 		e.preventDefault();
+    touchesToCoords(e);
 		checkPaintTouches(e);
 	}, false);
 	window.addEventListener("touchend", (e) => {
 		e.preventDefault();
+    touchesToCoords(e);
 		checkPaintTouches(e);
 	}, false);
 	window.addEventListener("touchcancel", (e) => {
 		e.preventDefault();
+    touchesToCoords(e);
 		checkPaintTouches(e);
 	}, false);
 }
