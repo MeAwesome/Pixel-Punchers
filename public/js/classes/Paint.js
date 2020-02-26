@@ -33,6 +33,14 @@ function Paint(id){
     paint.myBuffer = this;
   }
 
+  this.getButtonState = function(id){
+    for(var t = 0; t < this.trackingAreas.length; t++){
+      if(this.trackingAreas[t].id == id){
+        return this.trackingAreas[t].active;
+      }
+    }
+  }
+
   this.clear = function(){
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
