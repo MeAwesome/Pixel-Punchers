@@ -1,5 +1,8 @@
 onLoad();
 
+var x = 400;
+var y = 400;
+
 function onLoad(){
   socket = io();
   bindSocketEvents();
@@ -18,6 +21,7 @@ function setup(){
 
 function tick(){
   game.fill(Color.white);
+  game.box(x, y, 100, 100);
   gameDisplay.copyData(game, 0, 0, gameDisplay.canvas.width, gameDisplay.canvas.height);
   window.requestAnimationFrame(tick);
 }
@@ -28,6 +32,21 @@ function bindSocketEvents(){
   });
 
   socket.on("player_input", (button) => {
-    console.log(button);
+    switch(button){
+      case "A":
+        x++;
+        break;
+      case "B":
+        y++;
+        break;
+      case "Y":
+        x--;
+        break;
+      case "X":
+        y--;
+        break;
+      default:
+        break;
+    }
   });
 }
