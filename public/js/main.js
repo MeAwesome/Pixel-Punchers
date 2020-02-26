@@ -4,13 +4,23 @@ function onLoad(){
   me = new Player();
   game = new Paint("game");
   gameDisplay = new Paint("gameDisplay");
-  otherHit = false;
+  button_a = new Controller("circle-button");
+  button_b = new Controller("circle-button");
+  button_y = new Controller("circle-button");
+  button_x = new Controller("circle-button");
 }
 
 function setup(){
   game.makeBuffer(gameDisplay);
   game.setSize(1280, 720);
-  drawController();
+  button_a.setData("A", 1140, 360, 100, Color.white);
+  button_a.setLabel("A", 100, "Arial", Color.black);
+  button_b.setData("B", 980, 560, 100, Color.white);
+  button_b.setLabel("B", 100, "Arial", Color.black);
+  button_y.setData("Y", 820, 360, 100, Color.white);
+  button_y.setLabel("Y", 100, "Arial", Color.black);
+  button_x.setData("X", 980, 160, 100, Color.white);
+  button_x.setLabel("X", 100, "Arial", Color.black);
   game.setVisibility(false);
   gameDisplay.setSize(window.innerWidth, window.innerHeight);
   gameDisplay.setVisibility(true);
@@ -18,14 +28,34 @@ function setup(){
 }
 
 function tick(){
-  if(game.getButtonState("A") == true || otherHit == true){
-    if(otherHit == false){
-      socket.emit("button_hit");
-    }
-    game.circle(100, 100, 100, Color.red);
+  drawController();
+  if(button_a.pressed()){
+    button_a.setColor(Color.green);
+    button_a.setLabelColor(Color.white);
   } else {
-    socket.emit("button_unhit");
-    game.circle(100, 100, 100, Color.white);
+    button_a.setColor(Color.white);
+    button_a.setLabelColor(Color.black);
+  }
+  if(button_b.pressed()){
+    button_b.setColor(Color.red);
+    button_b.setLabelColor(Color.white);
+  } else {
+    button_b.setColor(Color.white);
+    button_b.setLabelColor(Color.black);
+  }
+  if(button_y.pressed()){
+    button_y.setColor(Color.yellow);
+    button_y.setLabelColor(Color.white);
+  } else {
+    button_y.setColor(Color.white);
+    button_y.setLabelColor(Color.black);
+  }
+  if(button_x.pressed()){
+    button_x.setColor(Color.blue);
+    button_x.setLabelColor(Color.white);
+  } else {
+    button_x.setColor(Color.white);
+    button_x.setLabelColor(Color.black);
   }
   gameDisplay.copyData(game, 0, 0, gameDisplay.canvas.width, gameDisplay.canvas.height);
   window.requestAnimationFrame(tick);
@@ -33,14 +63,10 @@ function tick(){
 
 function drawController(){
   game.fill(Color.black);
-  game.circButton("A", 1140, 360, 100, Color.white);
-  game.text("A", 1140, 360, Color.black, 100, "Arial", "centered");
-  game.circButton("B", 980, 560, 100, Color.white);
-  game.text("B", 980, 560, Color.black, 100, "Arial", "centered");
-  game.circButton("Y", 820, 360, 100, Color.white);
-  game.text("Y", 820, 360, Color.black, 100, "Arial", "centered");
-  game.circButton("X", 980, 160, 100, Color.white);
-  game.text("X", 980, 160, Color.black, 100, "Arial", "centered");
+  button_a.draw(game);
+  button_b.draw(game);
+  button_y.draw(game);
+  button_x.draw(game);
 }
 
 function bindSocketEvents(){
@@ -49,26 +75,16 @@ function bindSocketEvents(){
     me.setPlayerNickname(player.nickname);
     setup();
   });
-
-  socket.on("player_hit_button", () => {
-    otherHit = true;
-  });
-
-  socket.on("player_unhit_button", () => {
-    otherHit = false;
-  });
 }
 
 window.onload = function(){
   onLoad();
   window.addEventListener("resize", () => {
     gameDisplay.setSize(window.innerWidth, window.innerHeight);
-    game.removeTrackingAreas();
     drawController();
   });
   window.addEventListener("orientationchange", () => {
     gameDisplay.setSize(window.innerWidth, window.innerHeight);
-    game.removeTrackingAreas();
     drawController();
   });
   window.addEventListener("touchstart", (e) => {

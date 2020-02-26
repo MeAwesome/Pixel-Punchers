@@ -92,7 +92,7 @@ function Paint(id){
 
   this.circButton = function(id, x, y, r, color){
     this.circle(x, y, r, color);
-    this.trackingAreas.push({
+    this.addTrackingArea({
       id:id,
       type:"circle",
       active:false,
@@ -108,6 +108,17 @@ function Paint(id){
 
   this.copyData = function(paint, x, y, w, h){
     this.context.drawImage(paint.canvas, 0, 0, paint.canvas.width, paint.canvas.height, x, y, w, h);
+  }
+
+  this.addTrackingArea = function(data){
+    for(var t = 0; t < this.trackingAreas.length; t++){
+      if(this.trackingAreas[t].id == data.id){
+        this.trackingAreas[t].region = data.region;
+        this.trackingAreas[t].canHold = data.canHold;
+        return;
+      }
+    }
+    this.trackingAreas.push(data);
   }
 
   this.removeTrackingArea = function(id){

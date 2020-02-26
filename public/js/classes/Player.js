@@ -14,4 +14,14 @@ function Player(){
   this.setPlayerNickname = function(name){
     this.nickname = name;
   }
+
+  this.move = function(x, y){
+    this.coords.x += x;
+    this.coords.y += y;
+  }
+
+  this.moveTo = function(x, y){
+    this.coords.x = x;
+    this.coords.y = y;
+  }
 }
