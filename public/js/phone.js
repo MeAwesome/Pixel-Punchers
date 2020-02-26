@@ -1,3 +1,5 @@
+onLoad();
+
 function onLoad(){
   socket = io();
   bindSocketEvents();
@@ -5,16 +7,17 @@ function onLoad(){
   me = new Player();
   game = new Paint("game");
   gameDisplay = new Paint("gameDisplay");
+  left_joystick = new Controller("joystick");
   button_a = new Controller("circle-button");
   button_b = new Controller("circle-button");
   button_y = new Controller("circle-button");
   button_x = new Controller("circle-button");
-  left_joystick = new Controller("joystick");
 }
 
 function setup(){
   game.makeBuffer(gameDisplay);
   game.setSize(1280, 720);
+  left_joystick.setData("LS", 320, 360, 300, 100, Color.white, Color.black);
   button_a.setData("A", 1140, 360, 100, Color.white);
   button_a.setLabel("A", 100, "Arial", Color.black);
   button_b.setData("B", 980, 560, 100, Color.white);
@@ -23,7 +26,6 @@ function setup(){
   button_y.setLabel("Y", 100, "Arial", Color.black);
   button_x.setData("X", 980, 160, 100, Color.white);
   button_x.setLabel("X", 100, "Arial", Color.black);
-  left_joystick.setData("LS", 320, 360, 300, 100, Color.white, Color.black);
   game.setVisibility(false);
   gameDisplay.setSize(window.innerWidth, window.innerHeight);
   gameDisplay.setVisibility(true);
@@ -66,11 +68,11 @@ function tick(){
 
 function drawController(){
   game.fill(Color.black);
+  left_joystick.draw(game);
   button_a.draw(game);
   button_b.draw(game);
   button_y.draw(game);
   button_x.draw(game);
-  left_joystick.draw(game);
 }
 
 function bindSocketEvents(){
@@ -92,34 +94,31 @@ function touchesToCoords(e){
   }
 }
 
-window.onload = function(){
-  onLoad();
-  window.addEventListener("resize", () => {
-    gameDisplay.setSize(window.innerWidth, window.innerHeight);
-    drawController();
-  });
-  window.addEventListener("orientationchange", () => {
-    gameDisplay.setSize(window.innerWidth, window.innerHeight);
-    drawController();
-  });
-  window.addEventListener("touchstart", (e) => {
-		e.preventDefault();
-    touchesToCoords(e);
-		checkPaintTouches(e);
-	}, false);
-	window.addEventListener("touchmove", (e) => {
-		e.preventDefault();
-    touchesToCoords(e);
-		checkPaintTouches(e);
-	}, false);
-	window.addEventListener("touchend", (e) => {
-		e.preventDefault();
-    touchesToCoords(e);
-		checkPaintTouches(e);
-	}, false);
-	window.addEventListener("touchcancel", (e) => {
-		e.preventDefault();
-    touchesToCoords(e);
-		checkPaintTouches(e);
-	}, false);
-}
+window.addEventListener("resize", () => {
+  gameDisplay.setSize(window.innerWidth, window.innerHeight);
+  drawController();
+});
+window.addEventListener("orientationchange", () => {
+  gameDisplay.setSize(window.innerWidth, window.innerHeight);
+  drawController();
+});
+window.addEventListener("touchstart", (e) => {
+	e.preventDefault();
+  touchesToCoords(e);
+	checkPaintTouches(e);
+}, false);
+window.addEventListener("touchmove", (e) => {
+	e.preventDefault();
+  touchesToCoords(e);
+	checkPaintTouches(e);
+}, false);
+window.addEventListener("touchend", (e) => {
+	e.preventDefault();
+  touchesToCoords(e);
+	checkPaintTouches(e);
+}, false);
+window.addEventListener("touchcancel", (e) => {
+	e.preventDefault();
+  touchesToCoords(e);
+	checkPaintTouches(e);
+}, false);

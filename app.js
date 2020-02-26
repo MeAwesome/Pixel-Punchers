@@ -40,10 +40,6 @@ io.on("connection", function(socket){
 		socket.broadcast.emit("player_hit_button");
 	});
 
-	socket.on("button_unhit", () => {
-		socket.broadcast.emit("player_unhit_button");
-	});
-
 	socket.on("player_update", (data) => {
 
 	});
