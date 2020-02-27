@@ -50,6 +50,12 @@ function bindSocketEvents(){
   });
 }
 
+window.addEventListener("resize", () => {
+  gameDisplay.setSize(window.innerWidth, window.innerHeight);
+}, {passive:false});
+window.addEventListener("orientationchange", () => {
+  gameDisplay.setSize(window.innerWidth, window.innerHeight);
+}, {passive:false});
 window.addEventListener("touchstart", (e) => {
 	e.preventDefault();
 }, {passive:false});

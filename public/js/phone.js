@@ -106,11 +106,11 @@ function touchesToCoords(e){
 window.addEventListener("resize", () => {
   gameDisplay.setSize(window.innerWidth, window.innerHeight);
   drawController();
-});
+}, {passive:false});
 window.addEventListener("orientationchange", () => {
   gameDisplay.setSize(window.innerWidth, window.innerHeight);
   drawController();
-});
+}, {passive:false});
 window.addEventListener("touchstart", (e) => {
 	e.preventDefault();
   touchesToCoords(e);
