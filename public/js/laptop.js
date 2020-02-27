@@ -49,3 +49,16 @@ function bindSocketEvents(){
     }
   });
 }
+
+window.addEventListener("touchstart", (e) => {
+	e.preventDefault();
+}, {passive:false});
+window.addEventListener("touchmove", (e) => {
+	e.preventDefault();
+}, {passive:false});
+window.addEventListener("touchend", (e) => {
+	e.preventDefault();
+}, {passive:false});
+window.addEventListener("touchcancel", (e) => {
+	e.preventDefault();
+}, {passive:false});

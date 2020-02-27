@@ -115,19 +115,19 @@ window.addEventListener("touchstart", (e) => {
 	e.preventDefault();
   touchesToCoords(e);
 	checkPaintTouches(e);
-}, false);
+}, {passive:false});
 window.addEventListener("touchmove", (e) => {
 	e.preventDefault();
   touchesToCoords(e);
 	checkPaintTouches(e);
-}, false);
+}, {passive:false});
 window.addEventListener("touchend", (e) => {
 	e.preventDefault();
   touchesToCoords(e);
 	checkPaintTouches(e);
-}, false);
+}, {passive:false});
 window.addEventListener("touchcancel", (e) => {
 	e.preventDefault();
   touchesToCoords(e);
 	checkPaintTouches(e);
-}, false);
+}, {passive:false});
