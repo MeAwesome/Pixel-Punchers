@@ -2,6 +2,8 @@ function Player(){
   this.nickname = undefined;
   this.playerNumber = undefined;
   this.characterId = 0;
+  this.showingScreen = undefined;
+  this.code = "_ _ _ _";
   this.coords = {
     x:undefined,
     y:undefined
@@ -27,5 +29,9 @@ function Player(){
 
   this.draw = function(paint){
     paint.box(this.coords.x, this.coords.y, 100, 100, Color.black);
+  }
+
+  this.setCurrentScreen = function(s){
+    this.showingScreen = s;
   }
 }

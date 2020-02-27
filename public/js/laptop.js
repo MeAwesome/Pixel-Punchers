@@ -3,6 +3,7 @@ onLoad();
 function onLoad(){
   socket = io();
   bindSocketEvents();
+  me = new Host();
   p1 = new Player();
   game = new Paint("game");
   gameDisplay = new Paint("gameDisplay");
@@ -15,18 +16,56 @@ function setup(){
   p1.moveTo(590, 310);
   gameDisplay.setSize(window.innerWidth, window.innerHeight);
   gameDisplay.setVisibility(true);
+  tickCount = 0;
+  titleScreen();
+  me.setCurrentScreen("title");
   tick();
 }
 
 function tick(){
-  game.fill(Color.white);
-  p1.draw(game);
+  switch(me.showingScreen){
+    case "title":
+      titleScreen();
+      break;
+    default:
+      break;
+  }
   gameDisplay.copyData(game, 0, 0, gameDisplay.canvas.width, gameDisplay.canvas.height);
+  tickCount = (tickCount + 1) % 60;
   window.requestAnimationFrame(tick);
 }
 
+function titleScreen(){
+  game.fill(Color.black);
+  game.text("Battle Squids", 30, 100, Color.blue, 100, "Play");
+  game.text("Room Code", 180, 225, Color.blue, 60, "Play", "centered");
+  game.text(me.code, 180, 300, Color.white, 100, "Play", "centered");
+  game.polygon([
+    [0,720],
+    [0, 360],
+    [360, 360],
+    [900,0],
+    [1280,0],
+    [1280,720]
+  ], Color.blue);
+  game.text("Connect To", 30, 510, Color.white, 60, "Play");
+  game.text("battlesquids.herokuapp.com", 30, 620, Color.white, 50, "Play");
+  game.polygon([
+    [700, 700],
+    [700, 200],
+    [900, 60],
+    [1240, 60],
+    [1240, 700]
+  ], Color.white);
+}
+
 function bindSocketEvents(){
-  socket.on("connected_to_server", (player) => {
+  socket.on("connected_to_server", () => {
+    socket.emit("new_host");
+  });
+
+  socket.on("room_data", (data) => {
+    me.setData(data.code, data.players);
     setup();
   });
 

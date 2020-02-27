@@ -74,6 +74,13 @@ function Paint(id){
     this._restoreValues();
   }
 
+  this.polygon = function(points, color){
+    this._saveValues();
+    this._fillColor(color);
+    this._fillPoly(points);
+    this._restoreValues();
+  }
+
   this.text = function(text, x, y, color, size, font, alignment){
     this._saveValues();
     this._fillColor(color);
@@ -83,11 +90,11 @@ function Paint(id){
 
   this.rectButton = function(id, x, y, w, h, color){
     this.box(x, y, w, h, color);
-    this.trackingAreas.push({
+    this.addTrackingArea({
       id:id,
       type:"rectangle",
       active:false,
-      canHold:true,
+      canHold:false,
       touchNums:[],
       region:{
         x:x,
@@ -155,12 +162,25 @@ function Paint(id){
     this.context.fill();
   }
 
+  this._fillPoly = function(points){
+    this.context.beginPath();
+    this.context.moveTo(points[0][0], points[0][1]);
+    for(var p = 1; p < points.length; p++){
+      this.context.lineTo(points[p][0], points[p][1]);
+    }
+    this.context.lineTo(points[0][0], points[0][1]);
+    this.context.fill();
+  }
+
   this._fillText = function(text, x, y, size, font, alignment){
     this.context.font = size + "px " + font;
     switch(alignment){
       case "centered":
         this.context.textAlign = "center";
         this.context.textBaseline = "middle";
+        break;
+      default:
+        break;
     }
     this.context.fillText(text, x, y);
   }
@@ -191,25 +211,26 @@ function Paint(id){
           }
           break;
         case "circle":
-        for(var t = 0; t < e.touches.length; t++){
-          var r = this.trackingAreas[b].region.radius;
-          var x1 = this.trackingAreas[b].region.x - r;
-          var y1 = this.trackingAreas[b].region.y - r;
-          var x2 = this.trackingAreas[b].region.x + r;
-          var y2 = this.trackingAreas[b].region.y + r;
-          var touchX = e.touches[t].clientX;
-          var touchY = e.touches[t].clientY;
-          var widthRatio = 1;
-          var heightRatio = 1;
-          if(this.isBuffer){
-            widthRatio = this.isBufferFor.canvas.width / this.canvas.width;
-            heightRatio = this.isBufferFor.canvas.height / this.canvas.height;
+          for(var t = 0; t < e.touches.length; t++){
+            var r = this.trackingAreas[b].region.radius;
+            var x1 = this.trackingAreas[b].region.x - r;
+            var y1 = this.trackingAreas[b].region.y - r;
+            var x2 = this.trackingAreas[b].region.x + r;
+            var y2 = this.trackingAreas[b].region.y + r;
+            var touchX = e.touches[t].clientX;
+            var touchY = e.touches[t].clientY;
+            var widthRatio = 1;
+            var heightRatio = 1;
+            if(this.isBuffer){
+              widthRatio = this.isBufferFor.canvas.width / this.canvas.width;
+              heightRatio = this.isBufferFor.canvas.height / this.canvas.height;
+            }
+            if(touchX >= x1 * widthRatio && touchX <= x2 * widthRatio && touchY >= y1 * heightRatio && touchY <= y2 * heightRatio){
+              this.trackingAreas[b].touchNums.push(t);
+              this.trackingAreas[b].active = true;
+            }
           }
-          if(touchX >= x1 * widthRatio && touchX <= x2 * widthRatio && touchY >= y1 * heightRatio && touchY <= y2 * heightRatio){
-            this.trackingAreas[b].touchNums.push(t);
-            this.trackingAreas[b].active = true;
-          }
-        }
+          break;
         default:
           break;
       }
