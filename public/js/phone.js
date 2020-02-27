@@ -16,7 +16,7 @@ function onLoad(){
 function setup(){
   game.makeBuffer(gameDisplay);
   game.setSize(1280, 720);
-  left_joystick.setData("LS", 320, 360, 200, 50, Color.white, Color.black);
+  left_joystick.setData("LS", 320, 360, 200, 150, Color.white, Color.black);
   button_a.setData("A", 1140, 360, 100, Color.white);
   button_a.setLabel("A", 100, "Arial", Color.black);
   button_b.setData("B", 980, 560, 100, Color.white);
