@@ -1,8 +1,8 @@
 {
     "name":"Battle Squids Controller",
     "short_name":"B.S. Controller",
-    "theme_color":"#008000",
-    "background_color":"#008000",
+    "theme_color":"#000000",
+    "background_color":"#000000",
     "display":"standalone",
     "scope":"/public/",
     "start_url":"/public/index.html",
