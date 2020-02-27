@@ -30,22 +30,26 @@ function bindSocketEvents(){
     setup();
   });
 
-  socket.on("player_input", (button) => {
-    switch(button){
-      case "A":
-        p1.move(5, 0);
-        break;
-      case "B":
-        p1.move(0, 5);
-        break;
-      case "Y":
-        p1.move(-5, 0);
-        break;
-      case "X":
-        p1.move(0, -5);
-        break;
-      default:
-        break;
+  socket.on("player_input", (data) => {
+    if(data.type == "button"){
+      switch(data.button){
+        case "A":
+          p1.move(5, 0);
+          break;
+        case "B":
+          p1.move(0, 5);
+          break;
+        case "Y":
+          p1.move(-5, 0);
+          break;
+        case "X":
+          p1.move(0, -5);
+          break;
+        default:
+          break;
+      }
+    } else if(data.type == "joystick"){
+      p1.move(data.values.xaxis / 10, -data.values.yaxis / 10);
     }
   });
 }

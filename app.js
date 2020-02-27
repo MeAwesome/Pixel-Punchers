@@ -37,7 +37,17 @@ io.on("connection", function(socket){
 	});
 
 	socket.on("button_hit", (button) => {
-		socket.broadcast.emit("player_input", button);
+		socket.broadcast.emit("player_input", {
+			type:"button",
+			button:button
+		});
+	});
+
+	socket.on("joystick_moved", (values) => {
+		socket.broadcast.emit("player_input", {
+			type:"joystick",
+			values:values
+		});
 	});
 
 	socket.on("player_update", (data) => {

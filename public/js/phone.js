@@ -16,7 +16,7 @@ function onLoad(){
 function setup(){
   game.makeBuffer(gameDisplay);
   game.setSize(1280, 720);
-  left_joystick.setData("LS", 320, 360, 300, 100, Color.white, Color.black);
+  left_joystick.setData("LS", 320, 360, 200, 50, Color.white, Color.black);
   button_a.setData("A", 1140, 360, 100, Color.white);
   button_a.setLabel("A", 100, "Arial", Color.black);
   button_b.setData("B", 980, 560, 100, Color.white);
@@ -36,15 +36,24 @@ function tick(){
   if(button_a.pressed()){
     socket.emit("button_hit", "A");
   }
+  if(button_b.pressed()){
+    socket.emit("button_hit", "B");
+  }
+  if(button_y.pressed()){
+    socket.emit("button_hit", "Y");
+  }
+  if(button_x.pressed()){
+    socket.emit("button_hit", "X");
+  }
+  if(left_joystick.held()){
+    socket.emit("joystick_moved", left_joystick.getValues());
+  }
   if(button_a.held()){
     button_a.setColor(Color.green);
     button_a.setLabelColor(Color.white);
   } else {
     button_a.setColor(Color.white);
     button_a.setLabelColor(Color.black);
-  }
-  if(button_b.pressed()){
-    socket.emit("button_hit", "B");
   }
   if(button_b.held()){
     button_b.setColor(Color.red);
@@ -53,18 +62,12 @@ function tick(){
     button_b.setColor(Color.white);
     button_b.setLabelColor(Color.black);
   }
-  if(button_y.pressed()){
-    socket.emit("button_hit", "Y");
-  }
   if(button_y.held()){
     button_y.setColor(Color.yellow);
     button_y.setLabelColor(Color.white);
   } else {
     button_y.setColor(Color.white);
     button_y.setLabelColor(Color.black);
-  }
-  if(button_x.pressed()){
-    socket.emit("button_hit", "X");
   }
   if(button_x.held()){
     button_x.setColor(Color.blue);

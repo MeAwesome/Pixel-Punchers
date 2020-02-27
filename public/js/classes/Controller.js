@@ -95,6 +95,10 @@ function Controller(type){
       this.innerColor = undefined;
       this.type = type;
       this.paint = undefined;
+      this.values = {
+        xaxis:0,
+        yaxis:0
+      };
 
       this.setId = function(id){
         this.id = id;
@@ -130,18 +134,31 @@ function Controller(type){
         this.setInnerColor(ic);
       }
 
+      this.setValues = function(xa, ya){
+        this.values.xaxis = xa;
+        this.values.yaxis = ya;
+      }
+
       this.draw = function(paint){
         this.paint = paint;
         this.paint.circButton(this.id, this.x, this.y, this.outerRadius, this.outerColor);
         if(this.held()){
-          this.paint.circle(touches[this.paint.getButtonTouches(this.id)].x, touches[this.paint.getButtonTouches(this.id)].y, this.innerRadius, this.innerColor);
+          var x = touches[this.paint.getButtonTouches(this.id)].x;
+          var y = touches[this.paint.getButtonTouches(this.id)].y;
+          this.paint.circle(x, y, this.innerRadius, this.innerColor);
+          this.setValues(Math.floor(x - this.x), Math.floor(this.y - y));
         } else {
           this.paint.circle(this.x, this.y, this.innerRadius, this.innerColor);
+          this.setValues(0, 0);
         }
       }
 
       this.held = function(){
         return this.paint.getButtonState(this.id);
+      }
+
+      this.getValues = function(){
+        return this.values;
       }
       break;
   }
