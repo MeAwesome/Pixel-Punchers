@@ -143,8 +143,8 @@ function Controller(type){
         this.paint = paint;
         this.paint.circButton(this.id, this.x, this.y, this.outerRadius, this.outerColor);
         if(this.held()){
-          var x = touches[this.paint.getButtonTouches(this.id)].x;
-          var y = touches[this.paint.getButtonTouches(this.id)].y;
+          var x = touches[this.paint.getButtonTouches(this.id)[0]].x;
+          var y = touches[this.paint.getButtonTouches(this.id)[0]].y;
           this.paint.circle(x, y, this.innerRadius, this.innerColor);
           this.setValues(Math.floor(x - this.x), Math.floor(this.y - y));
         } else {
