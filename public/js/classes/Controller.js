@@ -133,14 +133,14 @@ function Controller(type){
       this.draw = function(paint){
         this.paint = paint;
         this.paint.circButton(this.id, this.x, this.y, this.outerRadius, this.outerColor);
-        if(this.pressed()){
+        if(this.held()){
           this.paint.circle(touches[this.paint.getButtonTouches(this.id)].x, touches[this.paint.getButtonTouches(this.id)].y, this.innerRadius, this.innerColor);
         } else {
           this.paint.circle(this.x, this.y, this.innerRadius, this.innerColor);
         }
       }
 
-      this.pressed = function(){
+      this.held = function(){
         return this.paint.getButtonState(this.id);
       }
       break;
