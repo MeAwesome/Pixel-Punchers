@@ -12,7 +12,7 @@ function setup(){
   game.makeBuffer(gameDisplay);
   game.setSize(1280, 720);
   game.setVisibility(false);
-  player.moveTo(590, 310);
+  p1.moveTo(590, 310);
   gameDisplay.setSize(window.innerWidth, window.innerHeight);
   gameDisplay.setVisibility(true);
   tick();
