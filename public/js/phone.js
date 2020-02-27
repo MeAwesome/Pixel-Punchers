@@ -4,7 +4,6 @@ function onLoad(){
   socket = io();
   bindSocketEvents();
   touches = [];
-  me = new Player();
   game = new Paint("game");
   gameDisplay = new Paint("gameDisplay");
   left_joystick = new Controller("joystick");
@@ -88,9 +87,7 @@ function drawController(){
 }
 
 function bindSocketEvents(){
-  socket.on("connected_to_server", (player) => {
-    me.setPlayerNumber(player.playerNumber);
-    me.setPlayerNickname(player.nickname);
+  socket.on("connected_to_server", () => {
     setup();
   });
 }

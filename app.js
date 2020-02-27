@@ -25,7 +25,7 @@ io.on("connection", function(socket){
 
 	var player = new Player(socket);
 	players[players.length] = player;
-	socket.emit("connected_to_server", player);
+	socket.emit("connected_to_server");
 
 	socket.on("disconnect", () => {
 		for(var player = 0; player < players.length; player++){

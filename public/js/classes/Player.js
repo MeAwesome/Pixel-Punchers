@@ -1,11 +1,11 @@
 function Player(){
   this.nickname = undefined;
   this.playerNumber = undefined;
+  this.characterId = 0;
   this.coords = {
     x:undefined,
     y:undefined
   }
-  this.characterId = 0;
 
   this.setPlayerNumber = function(num){
     this.playerNumber = num;
@@ -23,5 +23,9 @@ function Player(){
   this.moveTo = function(x, y){
     this.coords.x = x;
     this.coords.y = y;
+  }
+
+  this.draw = function(paint){
+    paint.box(this.coords.x, this.coords.y, 100, 100, Color.black);
   }
 }
