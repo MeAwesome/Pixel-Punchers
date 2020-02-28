@@ -57,6 +57,7 @@ function titleScreen(){
     [1240, 60],
     [1240, 700]
   ], Color.white);
+  game.text(me.players, 800, 300, Color.black, 30, "Play");
 }
 
 function bindSocketEvents(){

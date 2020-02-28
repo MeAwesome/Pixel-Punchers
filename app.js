@@ -31,6 +31,8 @@ io.on("connection", function(socket){
 	socket.on("disconnect", () => {
 		if(connections[socket.id].isHost == true){
 			rooms.splice(getHostRoom(socket.id), 1);
+		} else {
+
 		}
 	});
 
