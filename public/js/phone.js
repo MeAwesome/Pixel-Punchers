@@ -8,6 +8,7 @@ function onLoad(){
   game = new Paint("game");
   gameDisplay = new Paint("gameDisplay");
   keyboard = new Controller("keyboard");
+  input_box = new Controller("rectangle-button");
   left_joystick = new Controller("joystick");
   button_a = new Controller("circle-button");
   button_b = new Controller("circle-button");
@@ -21,15 +22,22 @@ function setup(){
   keyboard.setKeyData(Color.white);
   keyboard.setKeyLabelColor(Color.black);
   keyboard.setKeyHoldColors(Color.blue, Color.white);
+  input_box.setData("textbox", 0, 0, 0, 0, Color.white);
+  input_box.setLabel("textbox", 0, "Play", Color.lightgrey, "centered");
+  input_box.setHoldColors(Color.white, Color.black);
   left_joystick.setData("LS", 320, 360, 200, 150, Color.white, Color.black);
   button_a.setData("btn_a", 1140, 360, 100, Color.white);
   button_a.setLabel("A", 100, "Arial", Color.black);
+  button_a.setHoldColors(Color.green, Color.white);
   button_b.setData("btn_b", 980, 560, 100, Color.white);
   button_b.setLabel("B", 100, "Arial", Color.black);
+  button_b.setHoldColors(Color.red, Color.white);
   button_y.setData("btn_y", 820, 360, 100, Color.white);
   button_y.setLabel("Y", 100, "Arial", Color.black);
+  button_y.setHoldColors(Color.yellow, Color.white);
   button_x.setData("btn_x", 980, 160, 100, Color.white);
   button_x.setLabel("X", 100, "Arial", Color.black);
+  button_x.setHoldColors(Color.blue, Color.white);
   game.setVisibility(false);
   gameDisplay.setSize(window.innerWidth, window.innerHeight);
   gameDisplay.setVisibility(true);
@@ -43,6 +51,9 @@ function runner(){
   switch(me.showingScreen){
     case "room code":
       roomCodeScreen();
+      break;
+    case "character selection":
+      selectCharacter();
       break;
     case "controller":
       drawController();
@@ -59,8 +70,8 @@ function roomCodeScreen(){
   game.fill(Color.blue);
   game.box(200, 50, 880, 200, Color.white);
   game.text(me.code, 640, 150, Color.black, 150, "Arial", "centered");
-  game.box(0, 310, 1280, 720, Color.grey);
   keyboard.draw(game);
+  me.showingKeyboard = true;
   keyboard.keys.forEach((key) => {
     if(key.pressed()){
       if(key.id == "backspace"){
@@ -74,7 +85,7 @@ function roomCodeScreen(){
       } else if(key.id == "enter"){
         socket.emit("new_controller", me.code.replace(/\s+/g, ""));
       } else {
-        if(keyboard.key_shift.held()){
+        if(keyboard.shifting){
           me.code = me.code.replace("_", key.id.toUpperCase());
         } else {
           me.code = me.code.replace("_", key.id);
@@ -82,6 +93,78 @@ function roomCodeScreen(){
       }
     }
   });
+}
+
+function selectCharacter(){
+  game.fill(Color.black);
+  input_box.setPosition(20, 20);
+  input_box.setDimensions(400, 100);
+  input_box.setLabelSize(60);
+  if(me.nickname == ""){
+    input_box.setLabelColor(Color.lightgrey);
+    input_box.setLabelText("Nickname");
+  } else {
+    input_box.setLabelColor(Color.black);
+    input_box.setLabelText(me.nickname);
+  }
+  input_box.draw(game);
+  game.polygon([
+    [355, 360],
+    [510, 20],
+    [715, 20],
+    [875, 360],
+    [715,700],
+    [510,700]
+  ], Color.blue);
+  game.polygon([
+    [370, 360],
+    [520, 35],
+    [705, 35],
+    [860, 360],
+    [705,685],
+    [520,685]
+  ], Color.white);
+  if(input_box.pressed()){
+    me.showingKeyboard = true;
+  }
+  if(me.showingKeyboard == true){
+    keyboard.draw(game);
+    keyboard.keys.forEach((key) => {
+      if(key.pressed()){
+        if(key.id == "backspace"){
+          me.nickname = me.nickname.substring(0, me.nickname.length - 1);
+        } else if(key.id == "shift"){
+          return;
+        } else if(key.id == "space"){
+          me.nickname += " ";
+          if(game.textWidth(me.nickname, input_box.labelSize, input_box.labelFont) >= input_box.w){
+            me.nickname = me.nickname.substring(0, me.nickname.length - 1);
+          }
+        } else if(key.id == "enter"){
+          me.showingKeyboard = false;
+          keyboard.reset(game);
+          socket.emit("player_update", {
+            nickname:me.nickname
+          });
+        } else {
+          if(keyboard.shifting){
+            me.nickname += key.id.toUpperCase();
+          } else {
+            me.nickname += key.id;
+          }
+          if(game.textWidth(me.nickname, input_box.labelSize, input_box.labelFont) >= input_box.w){
+            me.nickname = me.nickname.substring(0, me.nickname.length - 1);
+          }
+        }
+      }
+    });
+    if(keyboard.dismissed(game)){
+      me.showingKeyboard = false;
+      socket.emit("player_update", {
+        nickname:me.nickname
+      });
+    }
+  }
 }
 
 function drawController(){
@@ -106,34 +189,6 @@ function drawController(){
   if(left_joystick.held()){
     socket.emit("joystick_moved", left_joystick.getValues());
   }
-  if(button_a.held()){
-    button_a.setColor(Color.green);
-    button_a.setLabelColor(Color.white);
-  } else {
-    button_a.setColor(Color.white);
-    button_a.setLabelColor(Color.black);
-  }
-  if(button_b.held()){
-    button_b.setColor(Color.red);
-    button_b.setLabelColor(Color.white);
-  } else {
-    button_b.setColor(Color.white);
-    button_b.setLabelColor(Color.black);
-  }
-  if(button_y.held()){
-    button_y.setColor(Color.yellow);
-    button_y.setLabelColor(Color.white);
-  } else {
-    button_y.setColor(Color.white);
-    button_y.setLabelColor(Color.black);
-  }
-  if(button_x.held()){
-    button_x.setColor(Color.blue);
-    button_x.setLabelColor(Color.white);
-  } else {
-    button_x.setColor(Color.white);
-    button_x.setLabelColor(Color.black);
-  }
 }
 
 function bindSocketEvents(){
@@ -142,12 +197,21 @@ function bindSocketEvents(){
   });
 
   socket.on("connected_to_room", () => {
-    me.setCurrentScreen("controller");
-  })
+    me.showingKeyboard = false;
+    keyboard.reset(game);
+    me.setCurrentScreen("character selection");
+  });
 
   socket.on("invalid_room", () => {
-    alert("wrong");
-  })
+    me.code = "Invalid";
+    setTimeout(() => {
+      me.code = "_ _ _ _";
+    }, 1000);
+  });
+
+  socket.on("disconnect", () => {
+
+  });
 }
 
 function touchesToCoords(e){

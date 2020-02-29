@@ -70,9 +70,17 @@ function Controller(type){
 
       this.draw = function(paint){
         this.paint = paint;
-        this.paint.circButton(this.id, this.x, this.y, this.radius, this.color);
+        if(this.paint.getButtonState(this.id)){
+          this.paint.circButton(this.id, this.x, this.y, this.radius, this.holdColor);
+        } else {
+          this.paint.circButton(this.id, this.x, this.y, this.radius, this.color);
+        }
         if(this.label != undefined){
-          this.paint.text(this.label, this.x, this.y, this.labelColor, this.labelSize, this.labelFont, "centered");
+          if(this.paint.getButtonState(this.id)){
+            this.paint.text(this.label, this.x, this.y, this.holdLabelColor, this.labelSize, this.labelFont, "centered");
+          } else {
+            this.paint.text(this.label, this.x, this.y, this.labelColor, this.labelSize, this.labelFont, "centered");
+          }
         }
       }
 
@@ -102,6 +110,7 @@ function Controller(type){
       this.labelColor = undefined;
       this.labelSize = undefined;
       this.labelFont = undefined;
+      this.labelPosition = "centered";
       this.color = undefined;
       this.holdColor = undefined;
       this.holdLabelColor = undefined;
@@ -155,11 +164,18 @@ function Controller(type){
         this.labelColor = color;
       }
 
-      this.setLabel = function(text, size, font, color){
+      this.setLabelPosition = function(pos){
+        this.labelPosition = pos;
+      }
+
+      this.setLabel = function(text, size, font, color, position){
         this.setLabelText(text);
         this.setLabelSize(size);
         this.setLabelFont(font);
         this.setLabelColor(color);
+        if(position != undefined){
+          this.setLabelPosition(position);
+        }
       }
 
       this.draw = function(paint){
@@ -171,9 +187,9 @@ function Controller(type){
         }
         if(this.label != undefined){
           if(this.paint.getButtonState(this.id)){
-            this.paint.text(this.label, this.x + (this.w / 2), this.y + (this.h / 2), this.holdLabelColor, this.labelSize, this.labelFont, "centered");
+            this.paint.text(this.label, this.x + (this.w / 2), this.y + (this.h / 2), this.holdLabelColor, this.labelSize, this.labelFont, this.labelPosition);
           } else {
-            this.paint.text(this.label, this.x + (this.w / 2), this.y + (this.h / 2), this.labelColor, this.labelSize, this.labelFont, "centered");
+            this.paint.text(this.label, this.x + (this.w / 2), this.y + (this.h / 2), this.labelColor, this.labelSize, this.labelFont, this.labelPosition);
           }
         }
       }
@@ -276,6 +292,9 @@ function Controller(type){
       this.backgroundColor = undefined;
       this.heldKeyColor = undefined;
       this.heldLabelColor = undefined;
+      this.canDismiss = false;
+      this._dismissWait = undefined;
+      this.shifting = false;
 
       this.key_1 = new Controller("rectangle-button");
       this.key_2 = new Controller("rectangle-button");
@@ -418,9 +437,71 @@ function Controller(type){
       }
 
       this.draw = function(paint){
+        paint.box(0, 310, paint.canvas.width, paint.canvas.height - 310, Color.grey);
         this.keys.forEach((key) => {
+          if(key.id != "shift" && key.id != "enter" && key.id != "space" && key.id != "backspace"){
+            if(this.shifting){
+              key.setLabelText(key.label.toUpperCase());
+            } else {
+              key.setLabelText(key.label.toLowerCase());
+            }
+          }
           key.draw(paint);
         });
+        if(this.key_shift.pressed()){
+          this.shifting = !this.shifting;
+          var c = this.key_shift.holdColor;
+          var lc = this.key_shift.holdLabelColor;
+          this.key_shift.setHoldColors(this.key_shift.color, this.key_shift.labelColor);
+          this.key_shift.setColor(c);
+          this.key_shift.setLabelColor(lc);
+          this.key_shift.draw(paint);
+        }
+        paint.addTrackingArea({
+          id:"click-off-keyboard",
+          type:"rectangle",
+          active:false,
+          canHold:false,
+          touchNums:[],
+          region:{
+            x:0,
+            y:0,
+            width:paint.canvas.width,
+            height:paint.canvas.height - (paint.canvas.height - 310)
+          }
+        });
+        this._dismissTimeout();
+      }
+
+      this.dismissed = function(paint){
+        if(paint.getButtonState("click-off-keyboard") == true && this.canDismiss == true){
+          this.reset(paint);
+          return true;
+        }
+        return false;
+      }
+
+      this.reset = function(paint){
+        if(this.shifting){
+          var c = this.key_shift.holdColor;
+          var lc = this.key_shift.holdLabelColor;
+          this.key_shift.setHoldColors(this.key_shift.color, this.key_shift.labelColor);
+          this.key_shift.setColor(c);
+          this.key_shift.setLabelColor(lc);
+        }
+        paint.removeTrackingArea("click-off-keyboard");
+        this.canDismiss = false;
+        this.shifting = false;
+        this._dismissWait = undefined;
+      }
+
+      this._dismissTimeout = function(){
+        if(this._dismissWait == undefined){
+          var me = this;
+          this._dismissWait = setTimeout(() => {
+            me.canDismiss = true;
+          }, 400);
+        }
       }
       break;
     default:

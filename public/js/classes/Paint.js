@@ -29,6 +29,7 @@ function Paint(id){
   this.makeBuffer = function(paint){
     this.isBuffer = true;
     this.isBufferFor = paint;
+    paint.context.scale(window.devicePixelRatio, window.devicePixelRatio);
     paint.hasBuffer = true;
     paint.myBuffer = this;
   }
@@ -39,6 +40,7 @@ function Paint(id){
         return this.trackingAreas[t].active;
       }
     }
+    return false;
   }
 
   this.getButtonTouches = function(id){
@@ -125,6 +127,14 @@ function Paint(id){
     this.context.drawImage(paint.canvas, 0, 0, paint.canvas.width, paint.canvas.height, x, y, w, h);
   }
 
+  this.textWidth = function(text, size, font){
+    this._saveValues();
+    this.context.font = size + "px " + font;
+    var width = this.context.measureText(text).width;
+    this._restoreValues();
+    return width;
+  }
+
   this.addTrackingArea = function(data){
     for(var t = 0; t < this.trackingAreas.length; t++){
       if(this.trackingAreas[t].id == data.id){
@@ -178,6 +188,9 @@ function Paint(id){
       case "centered":
         this.context.textAlign = "center";
         this.context.textBaseline = "middle";
+        break;
+      case "top-left":
+        this.context.textBaseline = "top";
         break;
       default:
         break;

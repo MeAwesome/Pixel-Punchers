@@ -57,7 +57,9 @@ function titleScreen(){
     [1240, 60],
     [1240, 700]
   ], Color.white);
-  game.text(me.players, 800, 300, Color.black, 30, "Play");
+  for(var p = 0; p < me.players.length; p++){
+    game.text(me.players[p].nickname, 800, 250 + (p * 50), Color.black, 30, "Play");
+  }
 }
 
 function bindSocketEvents(){
@@ -91,6 +93,10 @@ function bindSocketEvents(){
     } else if(data.type == "joystick"){
       p1.move(data.values.xaxis / 10, -data.values.yaxis / 10);
     }
+  });
+
+  socket.on("disconnect", () => {
+
   });
 }
 

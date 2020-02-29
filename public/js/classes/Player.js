@@ -1,8 +1,9 @@
 function Player(){
-  this.nickname = undefined;
   this.playerNumber = undefined;
   this.characterId = 0;
   this.showingScreen = undefined;
+  this.showingKeyboard = false;
+  this.nickname = "";
   this.code = "_ _ _ _";
   this.coords = {
     x:undefined,

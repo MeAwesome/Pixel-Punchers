@@ -49,7 +49,11 @@ io.on("connection", function(socket){
 	socket.on("new_controller", (code) => {
 		for(var r = 0; r < rooms.length; r++){
 			if(code == rooms[r].code){
-				rooms[r].players.push(socket.id);
+				rooms[r].players.push({
+					id:socket.id,
+					firstNickname:"Player " + (rooms[r].players.length + 1),
+					nickname:"Player " + (rooms[r].players.length + 1)
+				});
 				connections[rooms[r].host].socket.emit("room_data", getHostRoom(rooms[r].host));
 				socket.emit("connected_to_room");
 				return;
@@ -73,7 +77,15 @@ io.on("connection", function(socket){
 	});
 
 	socket.on("player_update", (data) => {
-
+		var myRoom = getControllerRoom(socket.id);
+		if(data.nickname != undefined){
+			if(data.nickname.trim() != ""){
+				myRoom.room.players[myRoom.pos].nickname = data.nickname;
+			} else {
+				myRoom.room.players[myRoom.pos].nickname = myRoom.room.players[myRoom.pos].firstNickname;
+			}
+		}
+		connections[myRoom.room.host].socket.emit("room_data", myRoom.room);
 	});
 
 });
@@ -97,6 +109,19 @@ function getHostRoom(id){
 	for(var r = 0; r < rooms.length; r++){
 		if(id == rooms[r].host){
 			return rooms[r];
+		}
+	}
+}
+
+function getControllerRoom(id){
+	for(var r = 0; r < rooms.length; r++){
+		for(var p = 0; p < rooms[r].players.length; p++){
+			if(id == rooms[r].players[p].id){
+				return {
+					room:rooms[r],
+					pos:p
+				};
+			}
 		}
 	}
 }
