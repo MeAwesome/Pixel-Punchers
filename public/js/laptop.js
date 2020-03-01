@@ -1,5 +1,3 @@
-onLoad();
-
 function onLoad(){
   socket = io();
   bindSocketEvents();

@@ -1,8 +1,4 @@
-onLoad();
-
-function onLoad(){
-  socket = io();
-  bindSocketEvents();
+async function onLoad(){
   touches = [];
   me = new Player();
   game = new Paint("game");
@@ -14,6 +10,13 @@ function onLoad(){
   button_b = new Controller("circle-button");
   button_y = new Controller("circle-button");
   button_x = new Controller("circle-button");
+  squid = new Album();
+  squid.addImages("/public/characters/squid/images/", [
+    "idle-front-512.png",
+    "idle-front.png"
+  ]);
+  socket = io();
+  bindSocketEvents();
 }
 
 function setup(){
@@ -111,19 +114,20 @@ function selectCharacter(){
   game.polygon([
     [355, 360],
     [510, 20],
-    [715, 20],
-    [875, 360],
-    [715,700],
+    [765, 20],
+    [925, 360],
+    [765,700],
     [510,700]
   ], Color.blue);
   game.polygon([
     [370, 360],
     [520, 35],
-    [705, 35],
-    [860, 360],
-    [705,685],
+    [755, 35],
+    [910, 360],
+    [755,685],
     [520,685]
   ], Color.white);
+  game.image(squid.photo("idle-front-512"), 640, 360, "centered");
   if(input_box.pressed()){
     me.showingKeyboard = true;
   }

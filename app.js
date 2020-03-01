@@ -80,7 +80,7 @@ io.on("connection", function(socket){
 		var myRoom = getControllerRoom(socket.id);
 		if(data.nickname != undefined){
 			if(data.nickname.trim() != ""){
-				myRoom.room.players[myRoom.pos].nickname = data.nickname;
+				myRoom.room.players[myRoom.pos].nickname = data.nickname.trim();
 			} else {
 				myRoom.room.players[myRoom.pos].nickname = myRoom.room.players[myRoom.pos].firstNickname;
 			}

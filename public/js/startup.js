@@ -4,4 +4,7 @@ window.onload = function(){
   } else {
   	document.getElementById("deviceScript").src = "/public/js/laptop.js";
   }
+  document.getElementById("deviceScript").onload = function(){
+    onLoad();
+  }
 }

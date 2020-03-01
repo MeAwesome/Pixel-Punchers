@@ -5,6 +5,7 @@ function Paint(id){
   this.canvas.id = id;
   this.context = this.canvas.getContext("2d");
   this.context.imageSmoothingEnabled = true;
+  this.context.scale(window.devicePixelRatio, window.devicePixelRatio);
   document.body.appendChild(this.canvas);
 
   this.isBuffer = false;
@@ -29,7 +30,6 @@ function Paint(id){
   this.makeBuffer = function(paint){
     this.isBuffer = true;
     this.isBufferFor = paint;
-    paint.context.scale(window.devicePixelRatio, window.devicePixelRatio);
     paint.hasBuffer = true;
     paint.myBuffer = this;
   }
@@ -87,6 +87,17 @@ function Paint(id){
     this._saveValues();
     this._fillColor(color);
     this._fillText(text, x, y, size, font, alignment);
+    this._restoreValues();
+  }
+
+  this.image = function(photo, x, y, width, height, alignment){
+    this._saveValues();
+    if(height == undefined){
+      alignment = width;
+      width = photo.width;
+      height = photo.height;
+    }
+    this._drawImage(photo.image(), x, y, width, height, alignment);
     this._restoreValues();
   }
 
@@ -196,6 +207,18 @@ function Paint(id){
         break;
     }
     this.context.fillText(text, x, y);
+  }
+
+  this._drawImage = function(image, x, y, width, height, alignment){
+    switch(alignment){
+      case "centered":
+        x -= (width / 2);
+        y -= (height / 2);
+        break;
+      default:
+        break;
+    }
+    this.context.drawImage(image, x, y, width, height);
   }
 
   this._testButtonClicks = function(e){
