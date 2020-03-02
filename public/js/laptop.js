@@ -4,6 +4,7 @@ function onLoad(){
   me = new Host();
   p1 = new Player();
   game = new Paint("game");
+  theme = new Wave("/public/sounds/Battle_Squids_Theme.mp3");
   gameDisplay = new Paint("gameDisplay");
 }
 
@@ -15,7 +16,6 @@ function setup(){
   gameDisplay.setSize(window.innerWidth, window.innerHeight);
   gameDisplay.setVisibility(true);
   tickCount = 0;
-  titleScreen();
   me.setCurrentScreen("title");
   tick();
 }
@@ -23,6 +23,7 @@ function setup(){
 function tick(){
   switch(me.showingScreen){
     case "title":
+      theme.play();
       titleScreen();
       break;
     default:
@@ -104,8 +105,24 @@ window.addEventListener("resize", () => {
 window.addEventListener("orientationchange", () => {
   gameDisplay.setSize(window.innerWidth, window.innerHeight);
 }, {passive:false});
+window.addEventListener("keydown", (e) => {
+  document.body.requestFullscreen().catch(() => {});
+  document.body.webkitRequestFullscreen().catch(() => {});
+  document.body.mozRequestFullscreen().catch(() => {});
+  document.body.msRequestFullscreen().catch(() => {});
+}, {passive:false});
+window.addEventListener("mousedown", (e) => {
+  document.body.requestFullscreen().catch(() => {});
+  document.body.webkitRequestFullscreen().catch(() => {});
+  document.body.mozRequestFullscreen().catch(() => {});
+  document.body.msRequestFullscreen().catch(() => {});
+}, {passive:false});
 window.addEventListener("touchstart", (e) => {
-	e.preventDefault();
+  document.body.requestFullscreen().catch(() => {});
+  document.body.webkitRequestFullscreen().catch(() => {});
+  document.body.mozRequestFullscreen().catch(() => {});
+  document.body.msRequestFullscreen().catch(() => {});
+  e.preventDefault();
 }, {passive:false});
 window.addEventListener("touchmove", (e) => {
 	e.preventDefault();

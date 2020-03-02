@@ -38,11 +38,7 @@ io.on("connection", function(socket){
 
 	socket.on("new_host", () => {
 		connections[socket.id].isHost = true;
-		rooms.push({
-			host:socket.id,
-			code:generateRoomCode(),
-			players:[]
-		});
+		rooms.push(new Room(socket.id));
 		socket.emit("room_data", getHostRoom(socket.id));
 	});
 
@@ -89,6 +85,12 @@ io.on("connection", function(socket){
 	});
 
 });
+
+function Room(host){
+	this.host = host;
+	this.code = generateRoomCode();
+	this.players = [];
+}
 
 function generateRoomCode(){
 	var code = "";

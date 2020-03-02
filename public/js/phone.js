@@ -1,8 +1,9 @@
-async function onLoad(){
+function onLoad(){
   touches = [];
   me = new Player();
   game = new Paint("game");
   gameDisplay = new Paint("gameDisplay");
+  theme = new Wave("/public/sounds/Battle_Squids_Theme.mp3");
   keyboard = new Controller("keyboard");
   input_box = new Controller("rectangle-button");
   left_joystick = new Controller("joystick");
@@ -10,6 +11,7 @@ async function onLoad(){
   button_b = new Controller("circle-button");
   button_y = new Controller("circle-button");
   button_x = new Controller("circle-button");
+  characters = new Characters();
   squid = new Album();
   squid.addImages("/public/characters/squid/images/", [
     "idle-front.png",
@@ -46,6 +48,7 @@ function setup(){
   gameDisplay.setSize(window.innerWidth, window.innerHeight);
   gameDisplay.setVisibility(true);
   tickCount = 0;
+  theme.play();
   me.setCurrentScreen("room code");
   runner();
 }
