@@ -96,6 +96,10 @@ function Paint(id){
       alignment = width;
       width = photo.width;
       height = photo.height;
+    } else if(typeof(height) == "string"){
+      alignment = height;
+      height = photo.height * width;
+      width = photo.width * width;
     }
     this._drawImage(photo.image(), x, y, width, height, alignment);
     this._restoreValues();

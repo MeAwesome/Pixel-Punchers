@@ -12,8 +12,9 @@ async function onLoad(){
   button_x = new Controller("circle-button");
   squid = new Album();
   squid.addImages("/public/characters/squid/images/", [
-    "idle-front-512.png",
-    "idle-front.png"
+    "idle-front.png",
+    "idle-left-0.png",
+    "idle-right-0.png"
   ]);
   socket = io();
   bindSocketEvents();
@@ -45,7 +46,6 @@ function setup(){
   gameDisplay.setSize(window.innerWidth, window.innerHeight);
   gameDisplay.setVisibility(true);
   tickCount = 0;
-  roomCodeScreen();
   me.setCurrentScreen("room code");
   runner();
 }
@@ -127,7 +127,7 @@ function selectCharacter(){
     [755,685],
     [520,685]
   ], Color.white);
-  game.image(squid.photo("idle-front-512"), 640, 360, "centered");
+  game.image(squid.photo("idle-front"), 640, 360, "centered");
   if(input_box.pressed()){
     me.showingKeyboard = true;
   }
