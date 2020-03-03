@@ -81,22 +81,34 @@ window.addEventListener("orientationchange", () => {
   gameDisplay.setSize(window.innerWidth, window.innerHeight);
 }, {passive:false});
 window.addEventListener("keydown", (e) => {
-  document.body.requestFullscreen().catch(() => {});
-  document.body.webkitRequestFullscreen().catch(() => {});
-  document.body.mozRequestFullscreen().catch(() => {});
-  document.body.msRequestFullscreen().catch(() => {});
+  try{
+    document.body.requestFullscreen().catch(() => {});
+    document.body.webkitRequestFullscreen().catch(() => {});
+    document.body.mozRequestFullscreen().catch(() => {});
+    document.body.msRequestFullscreen().catch(() => {});
+  } catch {
+
+  }
 }, {passive:false});
 window.addEventListener("mousedown", (e) => {
-  document.body.requestFullscreen().catch(() => {});
-  document.body.webkitRequestFullscreen().catch(() => {});
-  document.body.mozRequestFullscreen().catch(() => {});
-  document.body.msRequestFullscreen().catch(() => {});
+  try{
+    document.body.requestFullscreen().catch(() => {});
+    document.body.webkitRequestFullscreen().catch(() => {});
+    document.body.mozRequestFullscreen().catch(() => {});
+    document.body.msRequestFullscreen().catch(() => {});
+  } catch {
+
+  }
 }, {passive:false});
 window.addEventListener("touchstart", (e) => {
-  document.body.requestFullscreen().catch(() => {});
-  document.body.webkitRequestFullscreen().catch(() => {});
-  document.body.mozRequestFullscreen().catch(() => {});
-  document.body.msRequestFullscreen().catch(() => {});
+  try{
+    document.body.requestFullscreen().catch(() => {});
+    document.body.webkitRequestFullscreen().catch(() => {});
+    document.body.mozRequestFullscreen().catch(() => {});
+    document.body.msRequestFullscreen().catch(() => {});
+  } catch {
+
+  }
   e.preventDefault();
 }, {passive:false});
 window.addEventListener("touchmove", (e) => {
