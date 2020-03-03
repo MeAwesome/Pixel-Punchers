@@ -13,10 +13,14 @@ function onLoad(){
   button_x = new Controller("circle-button");
   characters = new Characters();
   squid = new Album();
+  man = new Album();
   squid.addImages("/public/characters/squid/images/", [
     "idle-front.png",
     "idle-left-0.png",
     "idle-right-0.png"
+  ]);
+  man.addImages("/public/characters/man/images/", [
+    "idle-front.png"
   ]);
   socket = io();
   bindSocketEvents();
@@ -89,7 +93,7 @@ function roomCodeScreen(){
       } else if(key.id == "shift" || key.id == "space"){
         return;
       } else if(key.id == "enter"){
-        socket.emit("new_controller", me.code.replace(/\s+/g, ""));
+        socket.emit("join_room", me.code.replace(/\s+/g, ""));
       } else {
         if(keyboard.shifting){
           me.code = me.code.replace("_", key.id.toUpperCase());
@@ -130,7 +134,7 @@ function selectCharacter(){
     [755,685],
     [520,685]
   ], Color.white);
-  game.image(squid.photo("idle-front"), 640, 360, "centered");
+  game.image(man.photo("idle-front"), 640, 360, "centered");
   if(input_box.pressed()){
     me.showingKeyboard = true;
   }
@@ -150,7 +154,7 @@ function selectCharacter(){
         } else if(key.id == "enter"){
           me.showingKeyboard = false;
           keyboard.reset(game);
-          socket.emit("player_update", {
+          socket.emit("update_player_metadata", {
             nickname:me.nickname
           });
         } else {
@@ -167,7 +171,7 @@ function selectCharacter(){
     });
     if(keyboard.dismissed(game)){
       me.showingKeyboard = false;
-      socket.emit("player_update", {
+      socket.emit("update_player_metadata", {
         nickname:me.nickname
       });
     }

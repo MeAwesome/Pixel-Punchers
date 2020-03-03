@@ -2,7 +2,6 @@ function onLoad(){
   socket = io();
   bindSocketEvents();
   me = new Host();
-  p1 = new Player();
   game = new Paint("game");
   theme = new Wave("/public/sounds/Battle_Squids_Theme.mp3");
   gameDisplay = new Paint("gameDisplay");
@@ -12,7 +11,6 @@ function setup(){
   game.makeBuffer(gameDisplay);
   game.setSize(1280, 720);
   game.setVisibility(false);
-  p1.moveTo(590, 310);
   gameDisplay.setSize(window.innerWidth, window.innerHeight);
   gameDisplay.setVisibility(true);
   tickCount = 0;
@@ -63,35 +61,12 @@ function titleScreen(){
 
 function bindSocketEvents(){
   socket.on("connected_to_server", () => {
-    socket.emit("new_host");
+    socket.emit("create_room");
   });
 
-  socket.on("room_data", (data) => {
-    me.setData(data.code, data.players);
+  socket.on("room_metadata", (data) => {
+    me.setData(data.code, Object.values(data.players));
     setup();
-  });
-
-  socket.on("player_input", (data) => {
-    if(data.type == "button"){
-      switch(data.button){
-        case "A":
-          p1.move(5, 0);
-          break;
-        case "B":
-          p1.move(0, 5);
-          break;
-        case "Y":
-          p1.move(-5, 0);
-          break;
-        case "X":
-          p1.move(0, -5);
-          break;
-        default:
-          break;
-      }
-    } else if(data.type == "joystick"){
-      p1.move(data.values.xaxis / 10, -data.values.yaxis / 10);
-    }
   });
 
   socket.on("disconnect", () => {

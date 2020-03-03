@@ -18,78 +18,125 @@ if(port != process.env.PORT){
 
 
 var connections = {};
-var rooms = [];
+var rooms = {};
 
 io.on("connection", function(socket){
 
-	connections[socket.id] = {
-		socket:socket,
-		isHost:false
-	};
+	connections[socket.id] = new Connection(socket);
+
 	socket.emit("connected_to_server");
 
 	socket.on("disconnect", () => {
-		if(connections[socket.id].isHost == true){
-			rooms.splice(getHostRoom(socket.id), 1);
+		if(connections[socket.id].isHost){
+			delete rooms[connections[socket.id].room];
+			delete connections[socket.id];
 		} else {
-
+			delete connections[socket.id];
 		}
 	});
 
-	socket.on("new_host", () => {
-		connections[socket.id].isHost = true;
-		rooms.push(new Room(socket.id));
-		socket.emit("room_data", getHostRoom(socket.id));
+	socket.on("create_room", () => {
+		var r = new Room(socket.id);
+		rooms[r.getCode()] = r;
+		socket.emit("room_metadata", r.getRoomMetadata());
 	});
 
-	socket.on("new_controller", (code) => {
-		for(var r = 0; r < rooms.length; r++){
-			if(code == rooms[r].code){
-				rooms[r].players.push({
-					id:socket.id,
-					firstNickname:"Player " + (rooms[r].players.length + 1),
-					nickname:"Player " + (rooms[r].players.length + 1)
-				});
-				connections[rooms[r].host].socket.emit("room_data", getHostRoom(rooms[r].host));
-				socket.emit("connected_to_room");
-				return;
+	socket.on("join_room", (code) => {
+		if(code == "#RANDOM"){
+			for(var r = 0; r < Object.keys(rooms).length; r++){
+				if(rooms[Object.keys(rooms)[r]].canJoin()){
+					rooms[Object.keys(rooms)[r]].addPlayer(socket.id);
+					connections[socket.id].updateRoomInfo(Object.keys(rooms)[r], false);
+					socket.emit("connected_to_room");
+					return;
+				}
 			}
-		}
-		socket.emit("invalid_room");
-	});
-
-	socket.on("button_hit", (button) => {
-		socket.broadcast.emit("player_input", {
-			type:"button",
-			button:button
-		});
-	});
-
-	socket.on("joystick_moved", (values) => {
-		socket.broadcast.emit("player_input", {
-			type:"joystick",
-			values:values
-		});
-	});
-
-	socket.on("player_update", (data) => {
-		var myRoom = getControllerRoom(socket.id);
-		if(data.nickname != undefined){
-			if(data.nickname.trim() != ""){
-				myRoom.room.players[myRoom.pos].nickname = data.nickname.trim();
+			socket.emit("room_unjoinable");
+		} else {
+			if(rooms[code] != undefined){
+				if(rooms[code].canJoin()){
+					rooms[code].addPlayer(socket.id);
+					connections[socket.id].updateRoomInfo(code, false);
+					socket.emit("connected_to_room");
+				} else {
+					socket.emit("room_unjoinable");
+				}
 			} else {
-				myRoom.room.players[myRoom.pos].nickname = myRoom.room.players[myRoom.pos].firstNickname;
+				socket.emit("invalid_room");
 			}
 		}
-		connections[myRoom.room.host].socket.emit("room_data", myRoom.room);
+	});
+
+	socket.on("update_room_metadata", (data) => {
+		rooms[connections[socket.id].room].updateMetadata(data);
+	});
+
+	socket.on("update_player_metadata", (data) => {
+		rooms[connections[socket.id].room].updatePlayerMetadata(socket.id, data);
 	});
 
 });
 
-function Room(host){
-	this.host = host;
-	this.code = generateRoomCode();
-	this.players = [];
+function Connection(socket){
+	this.socket = socket;
+	this.socketId = socket.id;
+	this.room = undefined;
+	this.isHost = false;
+	this.isPlayer = false;
+
+	this.updateRoomInfo = function(room, isHost){
+		this.room = room;
+		this.isHost = isHost;
+	}
+
+	this.getRoom = function(){
+		return this.room;
+	}
+}
+
+function Room(hostId){
+	this.metadata = {
+		host:hostId,
+		code:generateRoomCode(),
+		players:{},
+		maxPlayers:8
+	};
+
+	this.data = {
+
+	}
+
+	this.addPlayer = function(playerId){
+		this.metadata.players[playerId] = new Player(playerId, Object.keys(this.metadata.players));
+		connections[this.metadata.host].socket.emit("room_metadata", this.metadata);
+	}
+
+	this.canJoin = function(){
+		return Object.keys(this.metadata.players).length < this.metadata.maxPlayers;
+	}
+
+	this.getRoomMetadata = function(){
+		return this.metadata;
+	}
+
+	this.getCode = function(){
+		return this.metadata.code;
+	}
+
+	this.updateMetadata = function(data){
+		for(var m = 0; m < Object.keys(data).length; m++){
+			this.metadata[Object.keys(data)[m]] = data[Object.keys(data)[m]];
+		}
+		connections[this.metadata.host].socket.emit("room_metadata", this.metadata);
+	}
+
+	this.updatePlayerMetadata = function(player, data){
+		var me = this.metadata.players[player];
+		me.changeNickname(data.nickname);
+		connections[this.metadata.host].socket.emit("room_metadata", this.metadata);
+	}
+
+	connections[hostId].updateRoomInfo(this.metadata.code, true);
 }
 
 function generateRoomCode(){
@@ -98,8 +145,8 @@ function generateRoomCode(){
   for(var i = 0; i < 4; i++){
    	code += characters.charAt(Math.floor(Math.random() * characters.length));
   }
-	for(var c = 0; c < rooms.length; c++){
-		if(code == rooms[c].code){
+	for(var c = 0; c < Object.keys(rooms).length; c++){
+		if(code == rooms[Object.keys(rooms)[c]].getCode()){
 			generateRoomCode();
 			return;
 		}
@@ -107,29 +154,18 @@ function generateRoomCode(){
   return code;
 }
 
-function getHostRoom(id){
-	for(var r = 0; r < rooms.length; r++){
-		if(id == rooms[r].host){
-			return rooms[r];
-		}
-	}
-}
-
-function getControllerRoom(id){
-	for(var r = 0; r < rooms.length; r++){
-		for(var p = 0; p < rooms[r].players.length; p++){
-			if(id == rooms[r].players[p].id){
-				return {
-					room:rooms[r],
-					pos:p
-				};
-			}
-		}
-	}
-}
-
-function Player(socket){
-	this.id = socket.id;
+function Player(socketId, players){
+	this.id = socketId;
 	this.playerNumber = players.length;
+	this.defaultNickname = "Player " + (players.length + 1);
 	this.nickname = "Player " + (players.length + 1);
+
+	this.changeNickname = function(name){
+		name = name.trim();
+		if(name == ""){
+			this.nickname = this.defaultNickname;
+		} else {
+			this.nickname = name;
+		}
+	}
 }
