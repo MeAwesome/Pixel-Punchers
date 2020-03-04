@@ -12,13 +12,15 @@ function onLoad(){
   button_y = new Controller("circle-button");
   button_x = new Controller("circle-button");
   menu_join = new Controller("image-button");
+  menu_create = new Controller("image-button");
   characters = new Characters();
   buttons = new Album();
   squid = new Album();
   man = new Album();
   buttons.addImages("/public/images/", [
     "join-button.png",
-    "join-button-held.png"
+    "join-button-held.png",
+    "create-button.png"
   ]);
   squid.addImages("/public/characters/squid/images/", [
     "idle-front.png",
@@ -56,6 +58,7 @@ function setup(){
   button_x.setHoldColors(Color.blue, Color.white);
   menu_join.setData("menu_join", buttons.photo("join-button"), 100, 104);
   menu_join.setHoldImage(buttons.photo("join-button-held"));
+  menu_create.setData("menu_create", buttons.photo("create-button"), 668, 104);
   game.setVisibility(false);
   gameDisplay.setSize(window.innerWidth, window.innerHeight);
   gameDisplay.setVisibility(true);
@@ -90,6 +93,7 @@ function runner(){
 function menuScreen(){
   game.fill(Color.grey);
   menu_join.draw(game);
+  menu_create.draw(game);
   if(menu_join.pressed()){
     me.setCurrentScreen("join menu");
   }
