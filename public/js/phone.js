@@ -20,7 +20,6 @@ function onLoad(){
   man = new Album();
   buttons.addImages("/public/images/", [
     "join-button.png",
-    "join-button-held.png",
     "create-button.png",
     "back-button.png"
   ]);
@@ -59,7 +58,6 @@ function setup(){
   button_x.setLabel("X", 100, "Arial", Color.black);
   button_x.setHoldColors(Color.blue, Color.white);
   menu_join.setData("menu_join", buttons.photo("join-button"), 100, 104);
-  menu_join.setHoldImage(buttons.photo("join-button-held"));
   menu_create.setData("menu_create", buttons.photo("create-button"), 668, 104);
   menu_back.setData("menu_back", buttons.photo("back-button"), 0, 0);
   game.setVisibility(false);
@@ -277,6 +275,14 @@ window.addEventListener("orientationchange", () => {
   gameDisplay.setSize(window.innerWidth, window.innerHeight);
 }, {passive:false});
 window.addEventListener("touchstart", (e) => {
+  try{
+    document.body.requestFullscreen().then(() => {}).catch(() => {});
+    document.body.webkitRequestFullscreen().then(() => {}).catch(() => {});
+    document.body.mozRequestFullscreen().then(() => {}).catch(() => {});
+    document.body.msRequestFullscreen().then(() => {}).catch(() => {});
+  } catch {
+
+  }
 	e.preventDefault();
   touchesToCoords(e);
 	checkPaintTouches(e);
