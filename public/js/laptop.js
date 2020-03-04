@@ -110,7 +110,7 @@ function bindSocketEvents(){
 
 function goFullscreen(){
   if(fullscreen == false){
-    socket.emit("create_room");
+    socket.emit("create_room", "display");
     fullscreen = true;
   }
 }

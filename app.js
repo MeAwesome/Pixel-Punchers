@@ -35,8 +35,8 @@ io.on("connection", function(socket){
 		}
 	});
 
-	socket.on("create_room", () => {
-		var r = new Room(socket.id);
+	socket.on("create_room", (type) => {
+		var r = new Room(socket.id, type);
 		rooms[r.getCode()] = r;
 		socket.emit("room_metadata", r.getRoomMetadata());
 	});
@@ -94,9 +94,10 @@ function Connection(socket){
 	}
 }
 
-function Room(hostId){
+function Room(hostId, type){
 	this.metadata = {
 		host:hostId,
+		type:type,
 		code:generateRoomCode(),
 		players:{},
 		maxPlayers:8

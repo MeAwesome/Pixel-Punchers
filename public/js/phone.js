@@ -13,6 +13,7 @@ function onLoad(){
   button_x = new Controller("circle-button");
   menu_join = new Controller("image-button");
   menu_create = new Controller("image-button");
+  menu_back = new Controller("image-button");
   characters = new Characters();
   buttons = new Album();
   squid = new Album();
@@ -20,7 +21,8 @@ function onLoad(){
   buttons.addImages("/public/images/", [
     "join-button.png",
     "join-button-held.png",
-    "create-button.png"
+    "create-button.png",
+    "back-button.png"
   ]);
   squid.addImages("/public/characters/squid/images/", [
     "idle-front.png",
@@ -59,6 +61,7 @@ function setup(){
   menu_join.setData("menu_join", buttons.photo("join-button"), 100, 104);
   menu_join.setHoldImage(buttons.photo("join-button-held"));
   menu_create.setData("menu_create", buttons.photo("create-button"), 668, 104);
+  menu_back.setData("menu_back", buttons.photo("back-button"), 0, 0);
   game.setVisibility(false);
   gameDisplay.setSize(window.innerWidth, window.innerHeight);
   gameDisplay.setVisibility(true);
@@ -101,6 +104,10 @@ function menuScreen(){
 
 function joinMenuScreen(){
   game.fill(Color.grey);
+  menu_back.draw(game);
+  if(menu_back.pressed()){
+    me.setCurrentScreen("main menu");
+  }
 }
 
 function roomCodeScreen(){
