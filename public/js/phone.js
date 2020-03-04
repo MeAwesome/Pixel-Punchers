@@ -11,9 +11,15 @@ function onLoad(){
   button_b = new Controller("circle-button");
   button_y = new Controller("circle-button");
   button_x = new Controller("circle-button");
+  menu_join = new Controller("image-button");
   characters = new Characters();
+  buttons = new Album();
   squid = new Album();
   man = new Album();
+  buttons.addImages("/public/images/", [
+    "join-button.png",
+    "join-button-held.png"
+  ]);
   squid.addImages("/public/characters/squid/images/", [
     "idle-front.png",
     "idle-left-0.png",
@@ -48,19 +54,24 @@ function setup(){
   button_x.setData("btn_x", 980, 160, 100, Color.white);
   button_x.setLabel("X", 100, "Arial", Color.black);
   button_x.setHoldColors(Color.blue, Color.white);
+  menu_join.setData("menu_join", buttons.photo("join-button"), 100, 104);
+  menu_join.setHoldImage(buttons.photo("join-button-held"));
   game.setVisibility(false);
   gameDisplay.setSize(window.innerWidth, window.innerHeight);
   gameDisplay.setVisibility(true);
   tickCount = 0;
   theme.play();
-  me.setCurrentScreen("room code");
+  me.setCurrentScreen("main menu");
   runner();
 }
 
 function runner(){
   switch(me.showingScreen){
-    case "room code":
-      roomCodeScreen();
+    case "main menu":
+      menuScreen();
+      break;
+    case "join menu":
+      joinMenuScreen();
       break;
     case "character selection":
       selectCharacter();
@@ -74,6 +85,18 @@ function runner(){
   gameDisplay.copyData(game, 0, 0, gameDisplay.canvas.width, gameDisplay.canvas.height);
   tickCount = (tickCount + 1) % 60;
   window.requestAnimationFrame(runner);
+}
+
+function menuScreen(){
+  game.fill(Color.grey);
+  menu_join.draw(game);
+  if(menu_join.pressed()){
+    me.setCurrentScreen("join menu");
+  }
+}
+
+function joinMenuScreen(){
+  game.fill(Color.grey);
 }
 
 function roomCodeScreen(){

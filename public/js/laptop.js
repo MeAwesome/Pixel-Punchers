@@ -1,10 +1,17 @@
 function onLoad(){
-  socket = io();
-  bindSocketEvents();
+  fullscreen = false;
   me = new Host();
   game = new Paint("game");
   theme = new Wave("/public/sounds/Battle_Squids_Theme.mp3");
   gameDisplay = new Paint("gameDisplay");
+  squid = new Album();
+  squid.addImages("/public/characters/squid/images/", [
+    "idle-front.png",
+    "idle-left-0.png",
+    "idle-right-0.png"
+  ]);
+  socket = io();
+  bindSocketEvents();
 }
 
 function setup(){
@@ -24,6 +31,15 @@ function tick(){
       theme.play();
       titleScreen();
       break;
+    case "connect":
+      connectScreen();
+      break;
+    case "main menu":
+      menuScreen();
+      break;
+    case "server disconnected":
+      serverDisconnectScreen();
+      break
     default:
       break;
   }
@@ -33,45 +49,70 @@ function tick(){
 }
 
 function titleScreen(){
-  game.fill(Color.black);
-  game.text("Battle Squids", 30, 100, Color.blue, 100, "Play");
-  game.text("Room Code", 180, 225, Color.blue, 60, "Play", "centered");
-  game.text(me.code, 180, 300, Color.white, 100, "Play", "centered");
+  game.fill(Color.grey);
   game.polygon([
-    [0,720],
-    [0, 360],
-    [360, 360],
-    [900,0],
-    [1280,0],
-    [1280,720]
+    [0, 720],
+    [0, 220],
+    [200, 520],
+    [500, 720]
   ], Color.blue);
-  game.text("Connect To", 30, 510, Color.white, 60, "Play");
-  game.text("battlesquids.herokuapp.com", 30, 620, Color.white, 50, "Play");
   game.polygon([
-    [700, 700],
-    [700, 200],
-    [900, 60],
-    [1240, 60],
-    [1240, 700]
-  ], Color.white);
-  for(var p = 0; p < me.players.length; p++){
-    game.text(me.players[p].nickname, 800, 250 + (p * 50), Color.black, 30, "Play");
-  }
+    [1280, 720],
+    [1280, 220],
+    [1080, 520],
+    [780, 720]
+  ], Color.blue);
+  game.text("Battle", 640, 100, Color.blue, 150, "Play", "centered");
+  game.text("Squids", 640, 250, Color.white, 200, "Play", "centered");
+  game.image(squid.photo("idle-front"), 640, 475, 256, 256, "centered");
+  game.text("Press Anything", 640, 660 + (Math.sin(tickCount) * 2), Color.white, 50, "Play", "centered");
+}
+
+function connectScreen(){
+  game.fill(Color.grey);
+  game.text("Play On This Display", 640, 100, Color.white, 125, "Play", "centered");
+  game.polygon([
+    [150, 200],
+    [1130, 200],
+    [1180, 250],
+    [1180, 550],
+    [1130, 600],
+    [150, 600],
+    [100, 550],
+    [100, 250]
+  ], Color.blue);
+  game.text(me.code, 640, 410, Color.white, 300, "Play", "centered");
+  game.text("JOIN  >  DISPLAY", 640, 660, Color.white, 50, "Play", "centered");
+}
+
+function menuScreen(){
+  game.fill(Color.grey);
+}
+
+function serverDisconnectScreen(){
+  game.fill(Color.red);
 }
 
 function bindSocketEvents(){
   socket.on("connected_to_server", () => {
-    socket.emit("create_room");
+    setup();
   });
 
   socket.on("room_metadata", (data) => {
     me.setData(data.code, Object.values(data.players));
-    setup();
+    me.setCurrentScreen("connect");
   });
 
   socket.on("disconnect", () => {
-
+    me.setCurrentScreen("server disconnected");
   });
+}
+
+function goFullscreen(){
+  if(fullscreen == false){
+    socket.emit("create_room");
+    fullscreen = true;
+  }
 }
 
 window.addEventListener("resize", () => {
@@ -82,30 +123,54 @@ window.addEventListener("orientationchange", () => {
 }, {passive:false});
 window.addEventListener("keydown", (e) => {
   try{
-    document.body.requestFullscreen().catch(() => {});
-    document.body.webkitRequestFullscreen().catch(() => {});
-    document.body.mozRequestFullscreen().catch(() => {});
-    document.body.msRequestFullscreen().catch(() => {});
+    document.body.requestFullscreen().then(() => {
+      goFullscreen();
+    }).catch(() => {});
+    document.body.webkitRequestFullscreen().then(() => {
+      goFullscreen();
+    }).catch(() => {});
+    document.body.mozRequestFullscreen().then(() => {
+      goFullscreen();
+    }).catch(() => {});
+    document.body.msRequestFullscreen().then(() => {
+      goFullscreen();
+    }).catch(() => {});
   } catch {
 
   }
 }, {passive:false});
 window.addEventListener("mousedown", (e) => {
   try{
-    document.body.requestFullscreen().catch(() => {});
-    document.body.webkitRequestFullscreen().catch(() => {});
-    document.body.mozRequestFullscreen().catch(() => {});
-    document.body.msRequestFullscreen().catch(() => {});
+    document.body.requestFullscreen().then(() => {
+      goFullscreen();
+    }).catch(() => {});
+    document.body.webkitRequestFullscreen().then(() => {
+      goFullscreen();
+    }).catch(() => {});
+    document.body.mozRequestFullscreen().then(() => {
+      goFullscreen();
+    }).catch(() => {});
+    document.body.msRequestFullscreen().then(() => {
+      goFullscreen();
+    }).catch(() => {});
   } catch {
 
   }
 }, {passive:false});
 window.addEventListener("touchstart", (e) => {
   try{
-    document.body.requestFullscreen().catch(() => {});
-    document.body.webkitRequestFullscreen().catch(() => {});
-    document.body.mozRequestFullscreen().catch(() => {});
-    document.body.msRequestFullscreen().catch(() => {});
+    document.body.requestFullscreen().then(() => {
+      goFullscreen();
+    }).catch(() => {});
+    document.body.webkitRequestFullscreen().then(() => {
+      goFullscreen();
+    }).catch(() => {});
+    document.body.mozRequestFullscreen().then(() => {
+      goFullscreen();
+    }).catch(() => {});
+    document.body.msRequestFullscreen().then(() => {
+      goFullscreen();
+    }).catch(() => {});
   } catch {
 
   }

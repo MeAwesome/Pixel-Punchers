@@ -210,6 +210,90 @@ function Controller(type){
         return this.paint.getButtonState(this.id);
       }
       break;
+    case "image-button":
+      this.x = undefined;
+      this.y = undefined;
+      this.w = undefined;
+      this.h = undefined;
+      this.id = undefined;
+      this.image = undefined;
+      this.holdImage = undefined;
+      this.type = type;
+      this.paint = undefined;
+      this.previousValue = false;
+
+      this.setId = function(id){
+        this.id = id;
+      }
+
+      this.setPosition = function(x, y){
+        this.x = x;
+        this.y = y;
+      }
+
+      this.setDimensions = function(w, h){
+        if(w != undefined && h != undefined){
+          this.w = w;
+          this.h = h;
+        } else {
+          this.w = this.image.width;
+          this.h = this.image.height;
+        }
+      }
+
+      this.setImage = function(img){
+        this.image = img;
+      }
+
+      this.setData = function(id, image, x, y, w, h){
+        this.setId(id);
+        this.setImage(image);
+        this.setPosition(x, y);
+        this.setDimensions(w, h);
+      }
+
+      this.setHoldImage = function(img){
+        this.holdImage = img;
+      }
+
+      this.draw = function(paint){
+        this.paint = paint;
+        this.paint.addTrackingArea({
+          id:this.id,
+          type:"rectangle",
+          active:false,
+          canHold:false,
+          touchNums:[],
+          region:{
+            x:this.x,
+            y:this.y,
+            width:this.w,
+            height:this.h
+          }
+        });
+        if(this.paint.getButtonState(this.id) && this.holdImage != undefined){
+          this.paint.image(this.holdImage, this.x + (this.w / 2), this.y + (this.h / 2), this.w, this.h, "centered");
+        } else {
+          this.paint.image(this.image, this.x + (this.w / 2), this.y + (this.h / 2), this.w, this.h, "centered");
+        }
+      }
+
+      this.pressed = function(){
+        var state = this.paint.getButtonState(this.id);
+        if(this.previousValue != state && state == true){
+          this.previousValue = state;
+          return true;
+        } else {
+          this.previousValue = state;
+          return false;
+        }
+      }
+
+      this.held = function(){
+        this.previousValue = this.paint.getButtonState(this.id);
+        return this.paint.getButtonState(this.id);
+      }
+      break;
     case "joystick":
       this.x = undefined;
       this.y = undefined;
