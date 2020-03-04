@@ -3,7 +3,7 @@
     "short_name":"Battle Squids",
     "theme_color":"#222222",
     "background_color":"#222222",
-    "display":"standalone",
+    "display":"fullscreen",
     "scope":"/public/",
     "start_url":"/public/index.html",
     "orientation":"landscape",
