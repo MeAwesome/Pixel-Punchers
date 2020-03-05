@@ -88,6 +88,13 @@ function connectScreen(){
 
 function menuScreen(){
   game.fill(Color.grey);
+  var c = ["blue", "red", "yellow", "green"];
+  if(me.players.length < 5){
+    for(var p = 0; p < me.players.length; p++){
+      game.box(p * (game.canvas.width / me.players.length), 0, (game.canvas.width / me.players.length), 480, Color[c[p]]);
+      game.box(p * (game.canvas.width / me.players.length) + 15, 15, (game.canvas.width / me.players.length) - 30, 450, Color.grey);
+    }
+  }
 }
 
 function serverDisconnectScreen(){
@@ -101,7 +108,10 @@ function bindSocketEvents(){
 
   socket.on("room_metadata", (data) => {
     me.setData(data.code, Object.values(data.players));
-    me.setCurrentScreen("connect");
+  });
+
+  socket.on("first_player_connected", () => {
+    me.setCurrentScreen("main menu");
   });
 
   socket.on("disconnect", () => {
@@ -112,6 +122,7 @@ function bindSocketEvents(){
 function goFullscreen(){
   if(fullscreen == false){
     socket.emit("create_room", "display");
+    me.setCurrentScreen("connect");
     fullscreen = true;
   }
 }

@@ -86,6 +86,10 @@ function runner(){
       theme.play();
       joinMenuScreen();
       break;
+    case "edit profile":
+      theme.play();
+      profileScreen();
+      break;
     case "private join menu":
       theme.play();
       joinPrivateRoomScreen();
@@ -116,6 +120,16 @@ function menuScreen(){
   if(menu_join.pressed()){
     me.setCurrentScreen("join menu");
   }
+  if(menu_profile.pressed()){
+    input_box.setPosition(340, 20);
+    input_box.setDimensions(600, 140);
+    input_box.setLabelSize(100);
+    input_box.setMaxLength(15);
+    input_box.setLabelText("");
+    input_box.setLabelPlaceholder("Nickname", Color.lightgrey);
+    me.showingKeyboard = false;
+    me.setCurrentScreen("edit profile");
+  }
 }
 
 function joinMenuScreen(){
@@ -136,8 +150,46 @@ function joinMenuScreen(){
     input_box.setDimensions(800, 280);
     input_box.setLabelSize(160);
     input_box.setMaxLength(4);
+    input_box.setLabelText("");
     input_box.setLabelPlaceholder("Code", Color.lightgrey);
     me.setCurrentScreen("display join menu");
+  }
+}
+
+function profileScreen(){
+  game.fill(Color.grey);
+  menu_back.draw();
+  if(me.showingKeyboard){
+    input_box.setLabelText(input_box.getValue());
+  } else {
+    input_box.setLabelText(me.nickname);
+  }
+  input_box.draw();
+  if(input_box.pressed()){
+    me.showingKeyboard = true;
+  }
+  if(me.showingKeyboard){
+    keyboard.draw();
+    if(keyboard.key_enter.pressed()){
+      me.showingKeyboard = false;
+      me.nickname = input_box.getValue();
+      keyboard.reset();
+    }
+    keyboard.keys.forEach((key) => {
+      if(key.pressed()){
+        if(keyboard.shifting){
+          input_box.input(key.id.toUpperCase());
+        } else {
+          input_box.input(key.id);
+        }
+      }
+    });
+    if(keyboard.dismissed()){
+      me.showingKeyboard = false;
+    }
+  }
+  if(menu_back.pressed()){
+    me.setCurrentScreen("main menu");
   }
 }
 
@@ -167,36 +219,13 @@ function joinDisplayScreen(){
     }
   });
   if(menu_back.pressed()){
+    keyboard.reset();
     me.setCurrentScreen("join menu");
   }
 }
 
-function roomCodeScreen(){
-  game.fill(Color.blue);
-  game.box(200, 50, 880, 200, Color.white);
-  game.text(me.code, 640, 150, Color.black, 150, "Arial", "centered");
-  keyboard.draw(game);
-  me.showingKeyboard = true;
-  keyboard.keys.forEach((key) => {
-    if(key.pressed()){
-
-    }
-  });
-}
-
 function selectCharacter(){
   game.fill(Color.black);
-  input_box.setPosition(20, 20);
-  input_box.setDimensions(400, 100);
-  input_box.setLabelSize(60);
-  if(me.nickname == ""){
-    input_box.setLabelColor(Color.lightgrey);
-    input_box.setLabelText("Nickname");
-  } else {
-    input_box.setLabelColor(Color.black);
-    input_box.setLabelText(me.nickname);
-  }
-  input_box.draw(game);
   game.polygon([
     [355, 360],
     [510, 20],
@@ -288,12 +317,15 @@ function bindSocketEvents(){
 
   socket.on("connected_to_room", () => {
     me.showingKeyboard = false;
-    keyboard.reset();
     me.setCurrentScreen("character selection");
   });
 
   socket.on("invalid_room", () => {
     input_box.setLabelText("");
+  });
+
+  socket.on("host_disconnect", () =>{
+    me.setCurrentScreen("main menu");
   });
 
   socket.on("disconnect", () => {

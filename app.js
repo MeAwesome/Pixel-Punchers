@@ -28,6 +28,8 @@ io.on("connection", function(socket){
 
 	socket.on("disconnect", () => {
 		if(connections[socket.id].isHost){
+			rooms[connections[socket.id].room].sendToPlayers("host_disconnect");
+			rooms[connections[socket.id].room].removeAllPlayers();
 			delete rooms[connections[socket.id].room];
 			delete connections[socket.id];
 		} else {
@@ -56,6 +58,9 @@ io.on("connection", function(socket){
 			if(rooms[code].canJoin()){
 				rooms[code].addPlayer(socket.id);
 				connections[socket.id].updateRoomInfo(code, false);
+				if(rooms[code].totalPlayers() == 1){
+					rooms[code].sendToHost("first_player_connected");
+				}
 				socket.emit("connected_to_room");
 			} else {
 				socket.emit("room_unjoinable");
@@ -107,15 +112,27 @@ function Room(hostId, type){
 
 	this.addPlayer = function(playerId){
 		this.metadata.players[playerId] = new Player(playerId, Object.keys(this.metadata.players));
-		connections[this.metadata.host].socket.emit("room_metadata", this.metadata);
+		this.sendToHost("room_metadata", this.metadata);
 	}
 
 	this.removePlayer = function(playerId){
+		connections[playerId].room = undefined;
 		delete this.metadata.players[playerId];
 	}
 
+	this.removeAllPlayers = function(){
+		for(var p = 0; p < Object.keys(this.metadata.players).length; p++){
+			connections[this.metadata.players[Object.keys(this.metadata.players)[p]].id].room = undefined;
+		}
+		this.metadata.players = {};
+	}
+
+	this.totalPlayers = function(){
+		return Object.keys(this.metadata.players).length
+	}
+
 	this.canJoin = function(){
-		return Object.keys(this.metadata.players).length < this.metadata.maxPlayers;
+		return  this.totalPlayers() < this.metadata.maxPlayers;
 	}
 
 	this.getRoomMetadata = function(){
@@ -126,17 +143,27 @@ function Room(hostId, type){
 		return this.metadata.code;
 	}
 
+	this.sendToPlayers = function(name, data){
+		for(var p = 0; p < Object.keys(this.metadata.players).length; p++){
+			connections[this.metadata.players[Object.keys(this.metadata.players)[p]].id].socket.emit(name, data);
+		}
+	}
+
+	this.sendToHost = function(name, data){
+		connections[this.metadata.host].socket.emit(name, data);
+	}
+
 	this.updateMetadata = function(data){
 		for(var m = 0; m < Object.keys(data).length; m++){
 			this.metadata[Object.keys(data)[m]] = data[Object.keys(data)[m]];
 		}
-		connections[this.metadata.host].socket.emit("room_metadata", this.metadata);
+		this.sendToHost("room_metadata", this.metadata);
 	}
 
 	this.updatePlayerMetadata = function(player, data){
 		var me = this.metadata.players[player];
 		me.changeNickname(data.nickname);
-		connections[this.metadata.host].socket.emit("room_metadata", this.metadata);
+		this.sendToHost("room_metadata", this.metadata);
 	}
 
 	connections[hostId].updateRoomInfo(this.metadata.code, true);
