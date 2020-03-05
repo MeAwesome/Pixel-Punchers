@@ -31,6 +31,9 @@ io.on("connection", function(socket){
 			delete rooms[connections[socket.id].room];
 			delete connections[socket.id];
 		} else {
+			if(connections[socket.id].room){
+				rooms[connections[socket.id].room].removePlayer(socket.id);
+			}
 			delete connections[socket.id];
 		}
 	});
@@ -45,25 +48,20 @@ io.on("connection", function(socket){
 		if(code == "#RANDOM"){
 			for(var r = 0; r < Object.keys(rooms).length; r++){
 				if(rooms[Object.keys(rooms)[r]].canJoin()){
-					rooms[Object.keys(rooms)[r]].addPlayer(socket.id);
-					connections[socket.id].updateRoomInfo(Object.keys(rooms)[r], false);
-					socket.emit("connected_to_room");
-					return;
+					code = Object.keys(rooms)[r];
 				}
 			}
-			socket.emit("room_unjoinable");
-		} else {
-			if(rooms[code] != undefined){
-				if(rooms[code].canJoin()){
-					rooms[code].addPlayer(socket.id);
-					connections[socket.id].updateRoomInfo(code, false);
-					socket.emit("connected_to_room");
-				} else {
-					socket.emit("room_unjoinable");
-				}
+		}
+		if(rooms[code] != undefined){
+			if(rooms[code].canJoin()){
+				rooms[code].addPlayer(socket.id);
+				connections[socket.id].updateRoomInfo(code, false);
+				socket.emit("connected_to_room");
 			} else {
-				socket.emit("invalid_room");
+				socket.emit("room_unjoinable");
 			}
+		} else {
+			socket.emit("invalid_room");
 		}
 	});
 
@@ -110,6 +108,10 @@ function Room(hostId, type){
 	this.addPlayer = function(playerId){
 		this.metadata.players[playerId] = new Player(playerId, Object.keys(this.metadata.players));
 		connections[this.metadata.host].socket.emit("room_metadata", this.metadata);
+	}
+
+	this.removePlayer = function(playerId){
+		delete this.metadata.players[playerId];
 	}
 
 	this.canJoin = function(){

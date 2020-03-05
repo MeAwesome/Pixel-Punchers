@@ -154,8 +154,11 @@ function joinDisplayScreen(){
   menu_back.draw();
   input_box.draw();
   keyboard.draw();
+  if(keyboard.key_enter.pressed()){
+    socket.emit("join_room", input_box.getValue());
+  }
   keyboard.keys.forEach((key) => {
-    if(key.pressed()){
+    if(key.pressed() && key.id != "space" && isNaN(key.id)){
       if(keyboard.shifting){
         input_box.input(key.id.toUpperCase());
       } else {
@@ -285,15 +288,12 @@ function bindSocketEvents(){
 
   socket.on("connected_to_room", () => {
     me.showingKeyboard = false;
-    keyboard.reset(game);
+    keyboard.reset();
     me.setCurrentScreen("character selection");
   });
 
   socket.on("invalid_room", () => {
-    me.code = "Invalid";
-    setTimeout(() => {
-      me.code = "_ _ _ _";
-    }, 1000);
+    input_box.setLabelText("");
   });
 
   socket.on("disconnect", () => {
