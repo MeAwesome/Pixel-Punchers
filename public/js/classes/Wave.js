@@ -12,4 +12,13 @@ function Wave(src){
 
     });
   }
+
+  this.pause = function(){
+    document.getElementById(this.id).pause();
+  }
+
+  this.stop = function(){
+    document.getElementById(this.id).pause();
+    this.currentTime = 0;
+  }
 }

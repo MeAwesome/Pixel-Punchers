@@ -99,6 +99,7 @@ function runner(){
       joinDisplayScreen();
       break;
     case "character selection":
+      theme.stop();
       selectCharacter();
       break;
     case "controller":
