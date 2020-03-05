@@ -1,4 +1,5 @@
-function Controller(type){
+function Controller(type, paint){
+  this.paint = paint;
   switch(type){
     case "circle-button":
       this.x = undefined;
@@ -13,7 +14,6 @@ function Controller(type){
       this.holdColor = undefined;
       this.holdLabelColor = undefined;
       this.type = type;
-      this.paint = undefined;
       this.previousValue = false;
 
       this.setId = function(id){
@@ -68,8 +68,7 @@ function Controller(type){
         this.setLabelColor(color);
       }
 
-      this.draw = function(paint){
-        this.paint = paint;
+      this.draw = function(){
         if(this.paint.getButtonState(this.id)){
           this.paint.circButton(this.id, this.x, this.y, this.radius, this.holdColor);
         } else {
@@ -115,7 +114,6 @@ function Controller(type){
       this.holdColor = undefined;
       this.holdLabelColor = undefined;
       this.type = type;
-      this.paint = undefined;
       this.previousValue = false;
 
       this.setId = function(id){
@@ -178,15 +176,14 @@ function Controller(type){
         }
       }
 
-      this.draw = function(paint){
-        this.paint = paint;
-        if(this.paint.getButtonState(this.id)){
+      this.draw = function(){
+        if(this.paint.getButtonState(this.id) && this.holdColor != undefined){
           this.paint.rectButton(this.id, this.x, this.y, this.w, this.h, this.holdColor);
         } else {
           this.paint.rectButton(this.id, this.x, this.y, this.w, this.h, this.color);
         }
         if(this.label != undefined){
-          if(this.paint.getButtonState(this.id)){
+          if(this.paint.getButtonState(this.id) && this.holdLabelColor != undefined){
             this.paint.text(this.label, this.x + (this.w / 2), this.y + (this.h / 2), this.holdLabelColor, this.labelSize, this.labelFont, this.labelPosition);
           } else {
             this.paint.text(this.label, this.x + (this.w / 2), this.y + (this.h / 2), this.labelColor, this.labelSize, this.labelFont, this.labelPosition);
@@ -219,7 +216,6 @@ function Controller(type){
       this.image = undefined;
       this.holdImage = undefined;
       this.type = type;
-      this.paint = undefined;
       this.previousValue = false;
 
       this.setId = function(id){
@@ -256,8 +252,7 @@ function Controller(type){
         this.holdImage = img;
       }
 
-      this.draw = function(paint){
-        this.paint = paint;
+      this.draw = function(){
         this.paint.addTrackingArea({
           id:this.id,
           type:"rectangle",
@@ -294,6 +289,132 @@ function Controller(type){
         return this.paint.getButtonState(this.id);
       }
       break;
+    case "input-box":
+      this.x = undefined;
+      this.y = undefined;
+      this.w = undefined;
+      this.h = undefined;
+      this.id = undefined;
+      this.label = "";
+      this.labelColor = undefined;
+      this.labelSize = undefined;
+      this.labelFont = undefined;
+      this.labelPosition = "centered";
+      this.labelPlaceholder = undefined;
+      this.labelPlaceholderColor = undefined;
+      this.maxLength = undefined;
+      this.color = undefined;
+      this.type = type;
+      this.previousValue = false;
+
+      this.setId = function(id){
+        this.id = id;
+      }
+
+      this.setPosition = function(x, y){
+        this.x = x;
+        this.y = y;
+      }
+
+      this.setDimensions = function(w, h){
+        this.w = w;
+        this.h = h;
+      }
+
+      this.setColor = function(c){
+        this.color = c;
+      }
+
+      this.setMaxLength = function(val){
+        this.maxLength = val;
+      }
+
+      this.setData = function(id, x, y, w, h, c, v){
+        this.setId(id);
+        this.setPosition(x, y);
+        this.setDimensions(w, h);
+        this.setColor(c);
+        this.setMaxLength(v);
+      }
+
+      this.setLabelText = function(text){
+        this.label = text;
+      }
+
+      this.setLabelSize = function(size){
+        this.labelSize = size;
+      }
+
+      this.setLabelFont = function(font){
+        this.labelFont = font;
+      }
+
+      this.setLabelColor = function(color){
+        this.labelColor = color;
+      }
+
+      this.setLabelPosition = function(pos){
+        this.labelPosition = pos;
+      }
+
+      this.setLabel = function(text, size, font, color, position){
+        this.setLabelText(text);
+        this.setLabelSize(size);
+        this.setLabelFont(font);
+        this.setLabelColor(color);
+        if(position != undefined){
+          this.setLabelPosition(position);
+        }
+      }
+
+      this.setLabelPlaceholder = function(ph, c){
+        this.labelPlaceholder = ph;
+        this.labelPlaceholderColor = c;
+      }
+
+      this.draw = function(){
+        this.paint.rectButton(this.id, this.x, this.y, this.w, this.h, this.color);
+        if(this.label != ""){
+          this.paint.text(this.label, this.x + (this.w / 2), this.y + (this.h / 2), this.labelColor, this.labelSize, this.labelFont, this.labelPosition);
+        } else {
+          this.paint.text(this.labelPlaceholder, this.x + (this.w / 2), this.y + (this.h / 2), this.labelPlaceholderColor, this.labelSize, this.labelFont, this.labelPosition);
+        }
+      }
+
+      this.input = function(val){
+        if(val.toLowerCase() == "backspace"){
+          this.label = this.label.substring(0, this.label.length - 1);
+        } else if(val.toLowerCase() == "shift" || val.toLowerCase() == "enter"){
+
+        } else if(val.toLowerCase() == "space"){
+          if(this.label.length < this.maxLength){
+            this.label += " ";
+          }
+        } else if(this.label.length < this.maxLength){
+          this.label += val;
+        }
+      }
+
+      this.getValue = function(){
+        return this.label;
+      }
+
+      this.pressed = function(){
+        var state = this.paint.getButtonState(this.id);
+        if(this.previousValue != state && state == true){
+          this.previousValue = state;
+          return true;
+        } else {
+          this.previousValue = state;
+          return false;
+        }
+      }
+
+      this.held = function(){
+        this.previousValue = this.paint.getButtonState(this.id);
+        return this.paint.getButtonState(this.id);
+      }
+      break;
     case "joystick":
       this.x = undefined;
       this.y = undefined;
@@ -303,7 +424,6 @@ function Controller(type){
       this.outerColor = undefined;
       this.innerColor = undefined;
       this.type = type;
-      this.paint = undefined;
       this.values = {
         xaxis:0,
         yaxis:0
@@ -348,8 +468,7 @@ function Controller(type){
         this.values.yaxis = ya;
       }
 
-      this.draw = function(paint){
-        this.paint = paint;
+      this.draw = function(){
         this.paint.circButton(this.id, this.x, this.y, this.outerRadius, this.outerColor);
         if(this.held()){
           var x = touches[this.paint.getButtonTouches(this.id)[0]].x;
@@ -380,46 +499,46 @@ function Controller(type){
       this._dismissWait = undefined;
       this.shifting = false;
 
-      this.key_1 = new Controller("rectangle-button");
-      this.key_2 = new Controller("rectangle-button");
-      this.key_3 = new Controller("rectangle-button");
-      this.key_4 = new Controller("rectangle-button");
-      this.key_5 = new Controller("rectangle-button");
-      this.key_6 = new Controller("rectangle-button");
-      this.key_7 = new Controller("rectangle-button");
-      this.key_8 = new Controller("rectangle-button");
-      this.key_9 = new Controller("rectangle-button");
-      this.key_0 = new Controller("rectangle-button");
-      this.key_q = new Controller("rectangle-button");
-      this.key_w = new Controller("rectangle-button");
-      this.key_e = new Controller("rectangle-button");
-      this.key_r = new Controller("rectangle-button");
-      this.key_t = new Controller("rectangle-button");
-      this.key_y = new Controller("rectangle-button");
-      this.key_u = new Controller("rectangle-button");
-      this.key_i = new Controller("rectangle-button");
-      this.key_o = new Controller("rectangle-button");
-      this.key_p = new Controller("rectangle-button");
-      this.key_a = new Controller("rectangle-button");
-      this.key_s = new Controller("rectangle-button");
-      this.key_d = new Controller("rectangle-button");
-      this.key_f = new Controller("rectangle-button");
-      this.key_g = new Controller("rectangle-button");
-      this.key_h = new Controller("rectangle-button");
-      this.key_j = new Controller("rectangle-button");
-      this.key_k = new Controller("rectangle-button");
-      this.key_l = new Controller("rectangle-button");
-      this.key_z = new Controller("rectangle-button");
-      this.key_x = new Controller("rectangle-button");
-      this.key_c = new Controller("rectangle-button");
-      this.key_v = new Controller("rectangle-button");
-      this.key_b = new Controller("rectangle-button");
-      this.key_n = new Controller("rectangle-button");
-      this.key_m = new Controller("rectangle-button");
-      this.key_space = new Controller("rectangle-button");
-      this.key_shift = new Controller("rectangle-button");
-      this.key_backspace = new Controller("rectangle-button");
-      this.key_enter = new Controller("rectangle-button");
+      this.key_1 = new Controller("rectangle-button", this.paint);
+      this.key_2 = new Controller("rectangle-button", this.paint);
+      this.key_3 = new Controller("rectangle-button", this.paint);
+      this.key_4 = new Controller("rectangle-button", this.paint);
+      this.key_5 = new Controller("rectangle-button", this.paint);
+      this.key_6 = new Controller("rectangle-button", this.paint);
+      this.key_7 = new Controller("rectangle-button", this.paint);
+      this.key_8 = new Controller("rectangle-button", this.paint);
+      this.key_9 = new Controller("rectangle-button", this.paint);
+      this.key_0 = new Controller("rectangle-button", this.paint);
+      this.key_q = new Controller("rectangle-button", this.paint);
+      this.key_w = new Controller("rectangle-button", this.paint);
+      this.key_e = new Controller("rectangle-button", this.paint);
+      this.key_r = new Controller("rectangle-button", this.paint);
+      this.key_t = new Controller("rectangle-button", this.paint);
+      this.key_y = new Controller("rectangle-button", this.paint);
+      this.key_u = new Controller("rectangle-button", this.paint);
+      this.key_i = new Controller("rectangle-button", this.paint);
+      this.key_o = new Controller("rectangle-button", this.paint);
+      this.key_p = new Controller("rectangle-button", this.paint);
+      this.key_a = new Controller("rectangle-button", this.paint);
+      this.key_s = new Controller("rectangle-button", this.paint);
+      this.key_d = new Controller("rectangle-button", this.paint);
+      this.key_f = new Controller("rectangle-button", this.paint);
+      this.key_g = new Controller("rectangle-button", this.paint);
+      this.key_h = new Controller("rectangle-button", this.paint);
+      this.key_j = new Controller("rectangle-button", this.paint);
+      this.key_k = new Controller("rectangle-button", this.paint);
+      this.key_l = new Controller("rectangle-button", this.paint);
+      this.key_z = new Controller("rectangle-button", this.paint);
+      this.key_x = new Controller("rectangle-button", this.paint);
+      this.key_c = new Controller("rectangle-button", this.paint);
+      this.key_v = new Controller("rectangle-button", this.paint);
+      this.key_b = new Controller("rectangle-button", this.paint);
+      this.key_n = new Controller("rectangle-button", this.paint);
+      this.key_m = new Controller("rectangle-button", this.paint);
+      this.key_space = new Controller("rectangle-button", this.paint);
+      this.key_shift = new Controller("rectangle-button", this.paint);
+      this.key_backspace = new Controller("rectangle-button", this.paint);
+      this.key_enter = new Controller("rectangle-button", this.paint);
 
       this.keys = [
         this.key_1, this.key_2, this.key_3, this.key_4, this.key_5, this.key_6, this.key_7, this.key_8, this.key_9, this.key_0,
@@ -520,8 +639,8 @@ function Controller(type){
         });
       }
 
-      this.draw = function(paint){
-        paint.box(0, 310, paint.canvas.width, paint.canvas.height - 310, Color.grey);
+      this.draw = function(){
+        this.paint.box(0, 310, this.paint.canvas.width, this.paint.canvas.height - 310, Color.grey);
         this.keys.forEach((key) => {
           if(key.id != "shift" && key.id != "enter" && key.id != "space" && key.id != "backspace"){
             if(this.shifting){
@@ -530,7 +649,7 @@ function Controller(type){
               key.setLabelText(key.label.toLowerCase());
             }
           }
-          key.draw(paint);
+          key.draw();
         });
         if(this.key_shift.pressed()){
           this.shifting = !this.shifting;
@@ -539,9 +658,9 @@ function Controller(type){
           this.key_shift.setHoldColors(this.key_shift.color, this.key_shift.labelColor);
           this.key_shift.setColor(c);
           this.key_shift.setLabelColor(lc);
-          this.key_shift.draw(paint);
+          this.key_shift.draw();
         }
-        paint.addTrackingArea({
+        this.paint.addTrackingArea({
           id:"click-off-keyboard",
           type:"rectangle",
           active:false,
@@ -550,22 +669,22 @@ function Controller(type){
           region:{
             x:0,
             y:0,
-            width:paint.canvas.width,
-            height:paint.canvas.height - (paint.canvas.height - 310)
+            width:this.paint.canvas.width,
+            height:this.paint.canvas.height - (this.paint.canvas.height - 310)
           }
         });
         this._dismissTimeout();
       }
 
-      this.dismissed = function(paint){
-        if(paint.getButtonState("click-off-keyboard") == true && this.canDismiss == true){
-          this.reset(paint);
+      this.dismissed = function(){
+        if(this.paint.getButtonState("click-off-keyboard") == true && this.canDismiss == true){
+          this.reset();
           return true;
         }
         return false;
       }
 
-      this.reset = function(paint){
+      this.reset = function(){
         if(this.shifting){
           var c = this.key_shift.holdColor;
           var lc = this.key_shift.holdLabelColor;
@@ -573,7 +692,7 @@ function Controller(type){
           this.key_shift.setColor(c);
           this.key_shift.setLabelColor(lc);
         }
-        paint.removeTrackingArea("click-off-keyboard");
+        this.paint.removeTrackingArea("click-off-keyboard");
         this.canDismiss = false;
         this.shifting = false;
         this._dismissWait = undefined;

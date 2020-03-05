@@ -22,16 +22,17 @@ function setup(){
   gameDisplay.setVisibility(true);
   tickCount = 0;
   me.setCurrentScreen("title");
-  tick();
+  runner();
 }
 
-function tick(){
+function runner(){
   switch(me.showingScreen){
     case "title":
       theme.play();
       titleScreen();
       break;
     case "connect":
+      theme.play();
       connectScreen();
       break;
     case "main menu":
@@ -45,7 +46,7 @@ function tick(){
   }
   gameDisplay.copyData(game, 0, 0, gameDisplay.canvas.width, gameDisplay.canvas.height);
   tickCount = (tickCount + 1) % 60;
-  window.requestAnimationFrame(tick);
+  window.requestAnimationFrame(runner);
 }
 
 function titleScreen(){

@@ -4,16 +4,19 @@ function onLoad(){
   game = new Paint("game");
   gameDisplay = new Paint("gameDisplay");
   theme = new Wave("/public/sounds/Battle_Squids_Theme.mp3");
-  keyboard = new Controller("keyboard");
-  input_box = new Controller("rectangle-button");
-  left_joystick = new Controller("joystick");
-  button_a = new Controller("circle-button");
-  button_b = new Controller("circle-button");
-  button_y = new Controller("circle-button");
-  button_x = new Controller("circle-button");
-  menu_join = new Controller("image-button");
-  menu_create = new Controller("image-button");
-  menu_back = new Controller("image-button");
+  keyboard = new Controller("keyboard", game);
+  input_box = new Controller("input-box", game);
+  left_joystick = new Controller("joystick", game);
+  button_a = new Controller("circle-button", game);
+  button_b = new Controller("circle-button", game);
+  button_y = new Controller("circle-button", game);
+  button_x = new Controller("circle-button", game);
+  menu_join = new Controller("image-button", game);
+  menu_create = new Controller("image-button", game);
+  menu_profile = new Controller("rectangle-button", game);
+  menu_back = new Controller("image-button", game);
+  join_private = new Controller("rectangle-button", game);
+  join_display = new Controller("rectangle-button", game);
   characters = new Characters();
   buttons = new Album();
   squid = new Album();
@@ -41,9 +44,8 @@ function setup(){
   keyboard.setKeyData(Color.white);
   keyboard.setKeyLabelColor(Color.black);
   keyboard.setKeyHoldColors(Color.blue, Color.white);
-  input_box.setData("textbox", 0, 0, 0, 0, Color.white);
-  input_box.setLabel("textbox", 0, "Play", Color.lightgrey, "centered");
-  input_box.setHoldColors(Color.white, Color.black);
+  input_box.setData("textbox", 0, 0, 0, 0, Color.white, 0);
+  input_box.setLabel("", 0, "Play", Color.black, "centered");
   left_joystick.setData("LS", 320, 360, 200, 150, Color.white, Color.black);
   button_a.setData("btn_a", 1140, 360, 100, Color.white);
   button_a.setLabel("A", 100, "Arial", Color.black);
@@ -59,12 +61,17 @@ function setup(){
   button_x.setHoldColors(Color.blue, Color.white);
   menu_join.setData("menu_join", buttons.photo("join-button"), 100, 104);
   menu_create.setData("menu_create", buttons.photo("create-button"), 668, 104);
+  menu_profile.setData("menu_profile", 668, 424, 192, 192, Color.yellow);
+  menu_profile.setLabel("Profile", 60, "Play", Color.white, "centered");
   menu_back.setData("menu_back", buttons.photo("back-button"), 0, 0);
+  join_private.setData("join_private", 950, 100, 330, 250, Color.red);
+  join_private.setLabel("Private", 60, "Play", Color.white, "centered");
+  join_display.setData("join_display", 950, 370, 330, 250, Color.blue);
+  join_display.setLabel("Display", 60, "Play", Color.white, "centered");
   game.setVisibility(false);
   gameDisplay.setSize(window.innerWidth, window.innerHeight);
   gameDisplay.setVisibility(true);
   tickCount = 0;
-  theme.play();
   me.setCurrentScreen("main menu");
   runner();
 }
@@ -72,10 +79,20 @@ function setup(){
 function runner(){
   switch(me.showingScreen){
     case "main menu":
+      theme.play();
       menuScreen();
       break;
     case "join menu":
+      theme.play();
       joinMenuScreen();
+      break;
+    case "private join menu":
+      theme.play();
+      joinPrivateRoomScreen();
+      break;
+    case "display join menu":
+      theme.play();
+      joinDisplayScreen();
       break;
     case "character selection":
       selectCharacter();
@@ -93,8 +110,9 @@ function runner(){
 
 function menuScreen(){
   game.fill(Color.grey);
-  menu_join.draw(game);
-  menu_create.draw(game);
+  menu_join.draw();
+  menu_create.draw();
+  menu_profile.draw();
   if(menu_join.pressed()){
     me.setCurrentScreen("join menu");
   }
@@ -102,9 +120,51 @@ function menuScreen(){
 
 function joinMenuScreen(){
   game.fill(Color.grey);
-  menu_back.draw(game);
+  menu_back.draw();
+  game.box(200, 100, 700, 520, Color.white);
+  game.text("No Public Rooms Available", 550, 150, Color.black, 55, "Play", "centered");
+  join_private.draw();
+  join_display.draw();
   if(menu_back.pressed()){
     me.setCurrentScreen("main menu");
+  }
+  if(join_private.pressed()){
+    me.setCurrentScreen("private join menu");
+  }
+  if(join_display.pressed()){
+    input_box.setPosition(240, 20);
+    input_box.setDimensions(800, 280);
+    input_box.setLabelSize(160);
+    input_box.setMaxLength(4);
+    input_box.setLabelPlaceholder("Code", Color.lightgrey);
+    me.setCurrentScreen("display join menu");
+  }
+}
+
+function joinPrivateRoomScreen(){
+  game.fill(Color.grey);
+  menu_back.draw();
+  if(menu_back.pressed()){
+    me.setCurrentScreen("join menu");
+  }
+}
+
+function joinDisplayScreen(){
+  game.fill(Color.grey);
+  menu_back.draw();
+  input_box.draw();
+  keyboard.draw();
+  keyboard.keys.forEach((key) => {
+    if(key.pressed()){
+      if(keyboard.shifting){
+        input_box.input(key.id.toUpperCase());
+      } else {
+        input_box.input(key.id);
+      }
+    }
+  });
+  if(menu_back.pressed()){
+    me.setCurrentScreen("join menu");
   }
 }
 
@@ -116,23 +176,7 @@ function roomCodeScreen(){
   me.showingKeyboard = true;
   keyboard.keys.forEach((key) => {
     if(key.pressed()){
-      if(key.id == "backspace"){
-        if(me.code.lastIndexOf("_") == -1){
-          me.code = me.code.substring(0, me.code.length - 1) + "_";
-        } else if(me.code.indexOf("_") > 0){
-          me.code = me.code.slice(0, me.code.indexOf("_") - 2) + "_ " + me.code.substring(me.code.indexOf("_"), me.code.length);
-        }
-      } else if(key.id == "shift" || key.id == "space"){
-        return;
-      } else if(key.id == "enter"){
-        socket.emit("join_room", me.code.replace(/\s+/g, ""));
-      } else {
-        if(keyboard.shifting){
-          me.code = me.code.replace("_", key.id.toUpperCase());
-        } else {
-          me.code = me.code.replace("_", key.id);
-        }
-      }
+
     }
   });
 }
@@ -276,10 +320,10 @@ window.addEventListener("orientationchange", () => {
 }, {passive:false});
 window.addEventListener("touchstart", (e) => {
   try{
-    document.body.requestFullscreen().then(() => {}).catch(() => {});
-    document.body.webkitRequestFullscreen().then(() => {}).catch(() => {});
-    document.body.mozRequestFullscreen().then(() => {}).catch(() => {});
-    document.body.msRequestFullscreen().then(() => {}).catch(() => {});
+    //document.body.requestFullscreen().then(() => {}).catch(() => {});
+    //document.body.webkitRequestFullscreen().then(() => {}).catch(() => {});
+    //document.body.mozRequestFullscreen().then(() => {}).catch(() => {});
+    //document.body.msRequestFullscreen().then(() => {}).catch(() => {});
   } catch {
 
   }
