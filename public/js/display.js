@@ -134,7 +134,6 @@ window.addEventListener("orientationchange", () => {
   gameDisplay.setSize(window.innerWidth, window.innerHeight);
 }, {passive:false});
 window.addEventListener("keydown", (e) => {
-  try{
     document.body.requestFullscreen().then(() => {
       goFullscreen();
     }).catch(() => {});
@@ -147,12 +146,8 @@ window.addEventListener("keydown", (e) => {
     document.body.msRequestFullscreen().then(() => {
       goFullscreen();
     }).catch(() => {});
-  } catch {
-
-  }
 }, {passive:false});
 window.addEventListener("mousedown", (e) => {
-  try{
     document.body.requestFullscreen().then(() => {
       goFullscreen();
     }).catch(() => {});
@@ -165,12 +160,8 @@ window.addEventListener("mousedown", (e) => {
     document.body.msRequestFullscreen().then(() => {
       goFullscreen();
     }).catch(() => {});
-  } catch {
-
-  }
 }, {passive:false});
 window.addEventListener("touchstart", (e) => {
-  try{
     document.body.requestFullscreen().then(() => {
       goFullscreen();
     }).catch(() => {});
@@ -183,9 +174,6 @@ window.addEventListener("touchstart", (e) => {
     document.body.msRequestFullscreen().then(() => {
       goFullscreen();
     }).catch(() => {});
-  } catch {
-
-  }
   e.preventDefault();
 }, {passive:false});
 window.addEventListener("touchmove", (e) => {
