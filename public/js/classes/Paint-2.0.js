@@ -134,8 +134,7 @@ class PaintDisplay{
 
 
 class PaintPolygon{
-  constructor(id, points, c){
-    this.id = id;
+  constructor(points, c){
     this.points = points;
     this.color = c;
   }
@@ -156,14 +155,15 @@ class PaintPolygon{
 
 
 class PaintText{
-  constructor(text, x, y, color, font, size, alignment){
+  constructor(text, x, y, color, font, size, alignment, rotation){
     this.text = text;
     this.x = x;
     this.y = y;
     this.color = color;
     this.font = font;
     this.size = size;
-    this.alignment = alignment;
+    this.alignment = alignment || "normal";
+    this.rotation = rotation || 0;
   }
   draw(p){
     p.saveContext();

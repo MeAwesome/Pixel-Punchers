@@ -4,13 +4,22 @@ function Wave(src){
   this.audio = document.createElement("audio");
   this.audio.src = this.src;
   this.audio.id = this.id;
+  this.timesPlayed = 0;
   document.body.appendChild(this.audio);
   document.getElementById(this.id).load();
 
   this.play = function(){
-    document.getElementById(this.id).play().catch(() =>{
+    var original = document.getElementById(this.id);
+    var clone = original.cloneNode(true);
+    clone.id = this.id + ":" + this.timesPlayed;
+    this.timesPlayed++;
+    document.body.appendChild(clone);
+    clone.play().catch(() =>{
 
     });
+    clone.onended = function(){
+      document.getElementById(clone.id).remove();
+    }
   }
 
   this.pause = function(){
