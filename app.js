@@ -32,8 +32,6 @@ io.on("connection", (socket) => {
 
 	new Network.connection(socket);
 
-	socket.emit("connected_to_server");
-
 	socket.on("disconnect", () => {
 		Network.connections.getConnection(socket.id).terminate();
 	});

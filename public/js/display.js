@@ -1,52 +1,44 @@
 function onLoad(){
   fullscreen = false;
-  me = new Host();
   game = new Paint("game");
-  theme = new Wave("/public/sounds/Battle_Squids_Theme.mp3");
-  gameDisplay = new Paint("gameDisplay");
+  gameDisplay = new PaintDisplay("gameDisplay", game);
+  theme = new Wave("/public/sounds/Pixel_Punchers_Theme.mp3");
   squid = new Album();
-  squid.addImages("/public/characters/squid/images/", [
-    "idle-front.png",
-    "idle-left-0.png",
-    "idle-right-0.png"
+  squid.addImages("/public/images/squid/", [
+    "squid-idle-blue.png",
+    "squid-idle-green.png",
+    "squid-idle-grey.png",
+    "squid-idle-orange.png",
+    "squid-idle-pink.png",
+    "squid-idle-purple.png",
+    "squid-idle-red.png",
+    "squid-idle-yellow.png"
   ]);
   socket = io();
   bindSocketEvents();
 }
 
 function setup(){
-  game.makeBuffer(gameDisplay);
   game.setSize(1280, 720);
-  game.setVisibility(false);
-  gameDisplay.setSize(window.innerWidth, window.innerHeight);
-  gameDisplay.setVisibility(true);
-  tickCount = 0;
-  me.setCurrentScreen("title");
-  runner();
+  gameDisplay.setSize(window.innerWidth, window.innerHeight); //Future Isaac: keep this full screen and make function to keep proportions and have black bars on sides
+  gameDisplay.setDisplayMode("fit");
+  title_intro_screen = new PaintScreen("title intro", Color.orange, titleIntroScreen);
+  title_screen = new PaintScreen("title", titleScreen);
+  poly = new PaintPolygon("polygon", [[0, 0], [100, 0], [0, 100]], Color.white);
+  image = new PaintImage(squid.photo("squid-idle-blue"), 100, 100, 320, 320);
+  title_intro_screen.addObjects([poly, image]);
+  //title_intro_screen.setMaxTicks(3000, game, "title");
+  game.setScreen("title intro");
 }
 
-function runner(){
-  switch(me.showingScreen){
-    case "title":
-      theme.play();
-      titleScreen();
-      break;
-    case "connect":
-      theme.play();
-      connectScreen();
-      break;
-    case "main menu":
-      menuScreen();
-      break;
-    case "server disconnected":
-      serverDisconnectScreen();
-      break
-    default:
-      break;
+function titleIntroScreen(){
+  if(title_intro_screen.getTick() == 150){
+    title_intro_screen.setBackground(Color.blue);
   }
-  gameDisplay.copyData(game, 0, 0, gameDisplay.canvas.width, gameDisplay.canvas.height);
-  tickCount = (tickCount + 1) % 60;
-  window.requestAnimationFrame(runner);
+  poly.points.forEach((coord) => {
+    coord[0] += 1;
+    coord[1] += 1;
+  });
 }
 
 function titleScreen(){
@@ -102,20 +94,20 @@ function serverDisconnectScreen(){
 }
 
 function bindSocketEvents(){
-  socket.on("connected_to_server", () => {
+  socket.on("CONNETED_TO_SERVER", () => {
     setup();
   });
 
   socket.on("room_metadata", (data) => {
-    me.setData(data.code, Object.values(data.players));
+    //me.setData(data.code, Object.values(data.players));
   });
 
   socket.on("first_player_connected", () => {
-    me.setCurrentScreen("main menu");
+    //me.setCurrentScreen("main menu");
   });
 
   socket.on("disconnect", () => {
-    me.setCurrentScreen("server disconnected");
+    //me.setCurrentScreen("server disconnected");
   });
 }
 

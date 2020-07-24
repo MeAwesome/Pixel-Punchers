@@ -1,6 +1,298 @@
-const paintings = [];
+//Developed By: Isaac Robbins
 
-function Paint(id){
+class Paint{
+  constructor(id){
+    this.id = id;
+    this.screen = undefined;
+    this.canvas = document.createElement("canvas");
+    this.canvas.id = id;
+    this.context = this.canvas.getContext("2d");
+    this.context.imageSmoothingEnabled = true;
+    this.context.scale(window.devicePixelRatio, window.devicePixelRatio);
+    this.setVisibility(false);
+    document.body.appendChild(this.canvas);
+    paintings.addPainting(this);
+  }
+  setSize(w, h){
+    this.canvas.width = w;
+    this.canvas.height = h;
+  }
+  getWidth(){
+    return this.canvas.width;
+  }
+  getHeight(){
+    return this.canvas.height;
+  }
+  setVisibility(bool){
+    if(bool == true){
+      this.canvas.style.display = "block";
+    } else {
+      this.canvas.style.display = "none";
+    }
+  }
+  clear(){
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+  background(c){
+    this.saveContext();
+    this.context.fillStyle = c;
+    this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.restoreContext();
+  }
+  setColor(c){
+    this.context.fillStyle = c;
+  }
+  setScreen(id){
+    this.screen = id;
+    screens.getScreen(id).ticks = 0;
+    screens.drawScreen(this, id);
+  }
+  copyPaintImage(p, x, y, w, h){
+    this.context.drawImage(p.canvas, 0, 0, p.getWidth(), p.getHeight(), x, y, w, h);
+  }
+  saveContext(){
+		this.context.save();
+	}
+	restoreContext(){
+		this.context.restore();
+	}
+}
+
+
+
+class PaintDisplay{
+  constructor(id, p){
+    this.paint = new Paint(id);
+    this.id = id;
+    this.displaying = p;
+    this.dynamic = true;
+    this.displayMode = "fill";
+    this.paint.setVisibility(true);
+    this.refresh();
+  }
+  setDisplay(p){
+    this.displaying = p;
+    this.refresh();
+  }
+  setSize(w, h){
+    this.paint.setSize(w, h);
+  }
+  setVisibility(bool){
+    this.paint.setVisibility(bool);
+  }
+  setDynamic(bool){
+    if(bool == true){
+      this.dynamic = true;
+      this.refresh();
+    } else {
+      this.dynamic = false;
+    }
+  }
+  setDisplayMode(type){
+    if(type == "fill"){
+      this.displayMode = "fill";
+    } else {
+      this.displayMode = "fit";
+    }
+  }
+  refresh(){
+    if(this.dynamic){
+      this.paint.clear();
+      if(this.displayMode == "fill"){
+        this.paint.copyPaintImage(this.displaying, 0, 0, this.paint.getWidth(), this.paint.getHeight());
+      } else if(this.displayMode == "fit"){
+        var x = 0;
+        var y = 0;
+        var r = 0;
+        var w = this.displaying.getWidth();
+        var h = this.displaying.getHeight();
+        var maxW = this.paint.getWidth();
+        var maxH = this.paint.getHeight();
+        if(maxW > maxH){
+          r = h / w;
+          w = maxH / r;
+          h = maxH;
+          x = (maxW - w) / 2;
+        } else {
+          r = w / h;
+          h = maxW / r;
+          w = maxW;
+          y = (maxH - h) / 2;
+        }
+        this.paint.copyPaintImage(this.displaying, x, y, w, h);
+      }
+      window.requestAnimationFrame(() => {
+        this.refresh();
+      });
+    }
+  }
+}
+
+
+
+class PaintPolygon{
+  constructor(id, points, c){
+    this.id = id;
+    this.points = points;
+    this.color = c;
+    this.originalPoints = [];
+    for(var coord = 0; coord < points.length; coord++){
+      this.originalPoints.push([...points[coord]]);
+    }
+  }
+  draw(p){
+    p.saveContext();
+    p.setColor(this.color);
+    p.context.beginPath();
+    p.context.moveTo(this.points[0][0], this.points[0][1]);
+    for(var coord = 1; coord < this.points.length; coord++){
+      p.context.lineTo(this.points[coord][0], this.points[coord][1]);
+    }
+    p.context.lineTo(this.points[0][0], this.points[0][1]);
+    p.context.fill();
+    p.restoreContext();
+  }
+  reset(){
+    this.points = [];
+    for(var coord = 0; coord < this.originalPoints.length; coord++){
+      this.points.push([...this.originalPoints[coord]]);
+    }
+  }
+}
+
+
+
+class PaintImage{
+  constructor(photo, x, y, w, h){
+    this.photo = photo;
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+  }
+  draw(p){
+    p.saveContext();
+    p.context.drawImage(this.photo.img, this.x, this.y, this.w, this.h);
+    p.restoreContext();
+  }
+  reset(){
+
+  }
+}
+
+
+
+class PaintScreen{
+  constructor(id, b, f){
+    this.id = id;
+    this.function = f;
+    this.background = b || undefined;
+    this.objects = [];
+    this.animated = true;
+    this.maxTicks = undefined;
+    this.ticks = 0;
+    this.afterTicksPaint = undefined;
+    this.afterTicksScreen = undefined;
+    screens.addScreen(this);
+  }
+  setBackground(background){
+    this.background = background;
+  }
+  addObject(o){
+    this.objects.push(o);
+  }
+  addObjects(objects){
+    for(var o = 0; o < objects.length; o++){
+      this.addObject(objects[o]);
+    }
+  }
+  resetObjects(){
+    for(var o = 0; o < this.objects.length; o++){
+      this.objects[o].reset();
+    }
+  }
+  toggleAnimation(bool){
+    if(bool == true){
+      this.animated = true;
+    } else {
+      this.animated = false;
+    }
+  }
+  setMaxTicks(t, p, s){
+    this.maxTicks = t;
+    this.afterTicksPaint = p;
+    this.afterTicksScreen = s;
+  }
+  getTick(){
+    return this.ticks;
+  }
+  drawOn(p){
+    p.clear();
+    if(this.background != undefined){
+      p.background(this.background);
+    } else {
+      p.background(Color.black);
+    }
+    if(this.ticks == 0){
+      this.resetObjects();
+    }
+    if(this.function != undefined){
+      this.function();
+    }
+    for(var o = 0; o < this.objects.length; o++){
+      this.objects[o].draw(p);
+    }
+    this.ticks++;
+    if(this.ticks >= this.maxTicks){
+      this.ticks = 0;
+      this.afterTicksPaint.setScreen(this.afterTicksScreen);
+    }
+  }
+}
+
+
+
+class Paintings{
+  constructor(){
+    this.paintings = {};
+  }
+  addPainting(p){
+    this.paintings[p.id] = p;
+  }
+  getPainting(id){
+    return this.paintings[id];
+  }
+}
+
+
+
+class PaintScreens{
+  constructor(){
+    this.screens = {};
+  }
+  addScreen(s){
+    this.screens[s.id] = s;
+  }
+  getScreen(id){
+    return this.screens[id];
+  }
+  drawScreen(p, id){
+    if(p.screen == id){
+      screens.screens[id].drawOn(p);
+      if(screens.screens[id].animated){
+        window.requestAnimationFrame(() => {
+          screens.drawScreen(p, id);
+        });
+      }
+    }
+  }
+}
+
+const paintings = new Paintings();
+const screens = new PaintScreens();
+/*const paintingss = [];
+
+function Paint2(id){
   this.canvas = document.createElement("canvas");
   this.canvas.id = id;
   this.context = this.canvas.getContext("2d");
@@ -285,11 +577,12 @@ function Paint(id){
 		this.context.restore();
 	}
 
-  paintings.push(this);
+  paintingss.push(this);
 }
 
 function checkPaintTouches(e){
-  for(var p = 0; p < paintings.length; p++){
-    paintings[p]._testButtonClicks(e);
+  for(var p = 0; p < paintingss.length; p++){
+    paintingss[p]._testButtonClicks(e);
   }
 }
+*/

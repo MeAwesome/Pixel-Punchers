@@ -8,6 +8,7 @@ class Connection{
   	this.id = socket.id;
   	this.room = undefined;
     connections.addConnection(this);
+    socket.emit("CONNETED_TO_SERVER");
   }
   joinRoom(code){//Joins Given Room If Available
 		rooms.joinRoom(this, code);
