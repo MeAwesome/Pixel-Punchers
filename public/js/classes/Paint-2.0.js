@@ -4,6 +4,7 @@ class Paint{
   constructor(id){
     this.id = id;
     this.screen = undefined;
+    this.backgroundColor = Color.black;
     this.canvas = document.createElement("canvas");
     this.canvas.id = id;
     this.context = this.canvas.getContext("2d");
@@ -38,6 +39,7 @@ class Paint{
     this.context.fillStyle = c;
     this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
     this.restoreContext();
+    this.backgroundColor = c;
   }
   setColor(c){
     this.context.fillStyle = c;
@@ -119,6 +121,7 @@ class PaintDisplay{
           w = maxW;
           y = (maxH - h) / 2;
         }
+        this.paint.background(this.displaying.backgroundColor);
         this.paint.copyPaintImage(this.displaying, x, y, w, h);
       }
       window.requestAnimationFrame(() => {
