@@ -111,11 +111,29 @@ function bindSocketEvents(){
   });
 }
 
-function goFullscreen(){
-  if(fullscreen == false){
-    socket.emit("create_room", "display");
-    me.setCurrentScreen("connect");
-    fullscreen = true;
+function enterFullscreen(){
+  var elem = document.documentElement;
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.mozRequestFullScreen) { /* Firefox */
+    elem.mozRequestFullScreen();
+  } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) { /* IE/Edge */
+    elem.msRequestFullscreen();
+  }
+}
+
+function exitFullscreen() {
+  var elem = document.documentElement;
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.mozCancelFullScreen) { /* Firefox */
+    document.mozCancelFullScreen();
+  } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+    document.webkitExitFullscreen();
+  } else if (document.msExitFullscreen) { /* IE/Edge */
+    document.msExitFullscreen();
   }
 }
 
@@ -126,46 +144,15 @@ window.addEventListener("orientationchange", () => {
   gameDisplay.setSize(window.innerWidth, window.innerHeight);
 }, {passive:false});
 window.addEventListener("keydown", (e) => {
-    document.body.requestFullscreen().then(() => {
-      goFullscreen();
-    }).catch(() => {});
-    document.body.webkitRequestFullscreen().then(() => {
-      goFullscreen();
-    }).catch(() => {});
-    document.body.mozRequestFullscreen().then(() => {
-      goFullscreen();
-    }).catch(() => {});
-    document.body.msRequestFullscreen().then(() => {
-      goFullscreen();
-    }).catch(() => {});
+  enterFullscreen();
+  e.preventDefault();
 }, {passive:false});
 window.addEventListener("mousedown", (e) => {
-    document.body.requestFullscreen().then(() => {
-      goFullscreen();
-    }).catch(() => {});
-    document.body.webkitRequestFullscreen().then(() => {
-      goFullscreen();
-    }).catch(() => {});
-    document.body.mozRequestFullscreen().then(() => {
-      goFullscreen();
-    }).catch(() => {});
-    document.body.msRequestFullscreen().then(() => {
-      goFullscreen();
-    }).catch(() => {});
+  enterFullscreen();
+  e.preventDefault();
 }, {passive:false});
 window.addEventListener("touchstart", (e) => {
-    document.body.requestFullscreen().then(() => {
-      goFullscreen();
-    }).catch(() => {});
-    document.body.webkitRequestFullscreen().then(() => {
-      goFullscreen();
-    }).catch(() => {});
-    document.body.mozRequestFullscreen().then(() => {
-      goFullscreen();
-    }).catch(() => {});
-    document.body.msRequestFullscreen().then(() => {
-      goFullscreen();
-    }).catch(() => {});
+  enterFullscreen();
   e.preventDefault();
 }, {passive:false});
 window.addEventListener("touchmove", (e) => {
