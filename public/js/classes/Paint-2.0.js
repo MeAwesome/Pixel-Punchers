@@ -44,7 +44,7 @@ class Paint{
   }
   setScreen(id){
     this.screen = id;
-    screens.getScreen(id).ticks = 0;
+    screens.getScreen(id).resetScreen();
     screens.drawScreen(this, id);
   }
   copyPaintImage(p, x, y, w, h){
@@ -135,10 +135,6 @@ class PaintPolygon{
     this.id = id;
     this.points = points;
     this.color = c;
-    this.originalPoints = [];
-    for(var coord = 0; coord < points.length; coord++){
-      this.originalPoints.push([...points[coord]]);
-    }
   }
   draw(p){
     p.saveContext();
@@ -152,11 +148,26 @@ class PaintPolygon{
     p.context.fill();
     p.restoreContext();
   }
-  reset(){
-    this.points = [];
-    for(var coord = 0; coord < this.originalPoints.length; coord++){
-      this.points.push([...this.originalPoints[coord]]);
-    }
+}
+
+
+
+class PaintText{
+  constructor(text, x, y, color, font, size, alignment){
+    this.text = text;
+    this.x = x;
+    this.y = y;
+    this.color = color;
+    this.font = font;
+    this.size = size;
+    this.alignment = alignment;
+  }
+  draw(p){
+    p.saveContext();
+    p.context.font = this.size + "px " + this.font;
+    p.context.fillStyle = this.color;
+    p.context.fillText(this.text, this.x, this.y);
+    p.restoreContext();
   }
 }
 
@@ -175,9 +186,6 @@ class PaintImage{
     p.context.drawImage(this.photo.img, this.x, this.y, this.w, this.h);
     p.restoreContext();
   }
-  reset(){
-
-  }
 }
 
 
@@ -189,6 +197,7 @@ class PaintScreen{
     this.background = b || undefined;
     this.objects = [];
     this.animated = true;
+    this.windowAnimationFrameRunner = undefined;
     this.maxTicks = undefined;
     this.ticks = 0;
     this.afterTicksPaint = undefined;
@@ -206,10 +215,10 @@ class PaintScreen{
       this.addObject(objects[o]);
     }
   }
-  resetObjects(){
-    for(var o = 0; o < this.objects.length; o++){
-      this.objects[o].reset();
-    }
+  resetScreen(){
+    window.cancelAnimationFrame(this.windowAnimationFrameRunner);
+    this.objects = [];
+    this.ticks = 0;
   }
   toggleAnimation(bool){
     if(bool == true){
@@ -223,7 +232,7 @@ class PaintScreen{
     this.afterTicksPaint = p;
     this.afterTicksScreen = s;
   }
-  getTick(){
+  getTicks(){
     return this.ticks;
   }
   drawOn(p){
@@ -232,9 +241,6 @@ class PaintScreen{
       p.background(this.background);
     } else {
       p.background(Color.black);
-    }
-    if(this.ticks == 0){
-      this.resetObjects();
     }
     if(this.function != undefined){
       this.function();
@@ -280,7 +286,7 @@ class PaintScreens{
     if(p.screen == id){
       screens.screens[id].drawOn(p);
       if(screens.screens[id].animated){
-        window.requestAnimationFrame(() => {
+        screens.screens[id].windowAnimationFrameRunner = window.requestAnimationFrame(() => {
           screens.drawScreen(p, id);
         });
       }

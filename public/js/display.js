@@ -20,45 +20,43 @@ function onLoad(){
 
 function setup(){
   game.setSize(1280, 720);
-  gameDisplay.setSize(window.innerWidth, window.innerHeight); //Future Isaac: keep this full screen and make function to keep proportions and have black bars on sides
+  gameDisplay.setSize(window.innerWidth, window.innerHeight);
   gameDisplay.setDisplayMode("fit");
-  title_intro_screen = new PaintScreen("title intro", Color.orange, titleIntroScreen);
-  title_screen = new PaintScreen("title", titleScreen);
-  poly = new PaintPolygon("polygon", [[0, 0], [100, 0], [0, 100]], Color.white);
-  image = new PaintImage(squid.photo("squid-idle-blue"), 100, 100, 320, 320);
-  title_intro_screen.addObjects([poly, image]);
-  //title_intro_screen.setMaxTicks(3000, game, "title");
+  title_intro_screen = new PaintScreen("title intro", Color.black, titleIntroScreen);
+  title_screen = new PaintScreen("title", Color.blue, titleScreen);
   game.setScreen("title intro");
 }
 
 function titleIntroScreen(){
-  if(title_intro_screen.getTick() == 150){
-    title_intro_screen.setBackground(Color.blue);
+  if(title_intro_screen.getTicks() == 0){
+    title_intro_screen.setBackground(Color.black);
+    title_intro_screen.setMaxTicks(400, game, "title");
   }
-  poly.points.forEach((coord) => {
-    coord[0] += 1;
-    coord[1] += 1;
-  });
+  if(title_intro_screen.getTicks() == 50){
+    pixel = new PaintText("PIXEL", 400, 200, Color.white, "Play", 200, "middle");
+    title_intro_screen.addObject(pixel);
+  }
+  if(title_intro_screen.getTicks() == 100){
+    punchers = new PaintText("PUNCHERS", 150, 500, Color.white, "Play", 200, "middle");
+    title_intro_screen.addObject(punchers);
+  }
+  if(title_intro_screen.getTicks() == 200){
+    image = new PaintImage(squid.photo("squid-idle-blue"), 0, 720, 320, 320);
+    title_intro_screen.addObject(image);
+  }
+  if(title_intro_screen.getTicks() >= 200){
+    image.x +=5;
+    image.y -= 5;
+  }
 }
 
 function titleScreen(){
-  game.fill(Color.grey);
-  game.polygon([
-    [0, 720],
-    [0, 220],
-    [200, 520],
-    [500, 720]
-  ], Color.blue);
-  game.polygon([
-    [1280, 720],
-    [1280, 220],
-    [1080, 520],
-    [780, 720]
-  ], Color.blue);
-  game.text("Battle", 640, 100, Color.blue, 150, "Play", "centered");
-  game.text("Squids", 640, 250, Color.white, 200, "Play", "centered");
-  game.image(squid.photo("idle-front"), 640, 475, 256, 256, "centered");
-  game.text("Press Anything", 640, 660 + (Math.sin(tickCount) * 2), Color.white, 50, "Play", "centered");
+  if(title_screen.getTicks() == 0){
+    title_screen.setBackground(Color.blue);
+    title = new PaintText("PIXEL PUNCHERS", 50, 100, Color.white, "Play", 150, "middle");
+    image = new PaintImage(squid.photo("squid-idle-blue"), 800, 225, 320, 320);
+    title_screen.addObjects([title, image]);
+  }
 }
 
 function connectScreen(){
