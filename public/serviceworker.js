@@ -1,4 +1,4 @@
-const CACHE_NAME = "BattleSquidsCache";
+const CACHE_NAME = "PixelPunchersCache";
 
 const FILES_TO_CACHE = [
   "/"
