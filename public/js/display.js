@@ -145,7 +145,6 @@ window.addEventListener("orientationchange", () => {
 }, {passive:false});
 window.addEventListener("keydown", (e) => {
   enterFullscreen();
-  e.preventDefault();
 }, {passive:false});
 window.addEventListener("mousedown", (e) => {
   enterFullscreen();
