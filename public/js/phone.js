@@ -1,5 +1,6 @@
 function onLoad(){
   touches = [];
+  noSleep = new NoSleep();
   me = new Player();
   game = new Paint("game");
   gameDisplay = new Paint("gameDisplay");

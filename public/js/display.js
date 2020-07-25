@@ -1,5 +1,6 @@
 function onLoad(){
   fullscreen = false;
+  noSleep = new NoSleep();
   game = new Paint("game");
   gameDisplay = new PaintDisplay("gameDisplay", game);
   theme = new Howl({
