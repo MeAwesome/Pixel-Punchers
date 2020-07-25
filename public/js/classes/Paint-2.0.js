@@ -69,6 +69,14 @@ class PaintDisplay{
     this.displaying = p;
     this.dynamic = true;
     this.displayMode = "fill";
+    this.imageData = {
+      x:0,
+      y:0,
+      w:this.paint.getWidth(),
+      h:this.paint.getHeight(),
+      r:undefined
+    };
+    this.touches = [];
     this.paint.setVisibility(true);
     this.refresh();
   }
@@ -97,11 +105,47 @@ class PaintDisplay{
       this.displayMode = "fit";
     }
   }
+  convertTouches(e){
+    this.touches = [];
+    var x = this.imageData.x;
+    var y = this.imageData.y;
+    var w = this.imageData.w;
+    var h = this.imageData.h;
+    var r = this.imageData.r;
+    var dw = this.displaying.getWidth();
+    var dh = this.displaying.getHeight();
+    var maxW = this.paint.getWidth();
+    var maxH = this.paint.getHeight();
+    var rw = dw / w;
+    var rh = dh / h;
+    for(var coord = 0; coord < e.touches.length; coord++){
+      if(e.touches[coord].clientX >= x && e.touches[coord].clientX <= (x + w)){
+        if(e.touches[coord].clientY >= y && e.touches[coord].clientY <= (y + h)){
+          this.touches.push([(e.touches[coord].clientX - x) * rw, (e.touches[coord].clientY - y) * rh]);
+        }
+      }
+    }
+  }
   refresh(){
     if(this.dynamic){
       this.paint.clear();
       if(this.displayMode == "fill"){
-        this.paint.copyPaintImage(this.displaying, 0, 0, this.paint.getWidth(), this.paint.getHeight());
+        var w = this.displaying.getWidth();
+        var h = this.displaying.getHeight();
+        var maxW = this.paint.getWidth();
+        var maxH = this.paint.getHeight();
+        if(maxW > maxH){
+          r = h / w;
+        } else {
+          r = w / h;
+        }
+        this.imageData = {
+          x:0,
+          y:0,
+          w:this.paint.getWidth(),
+          h:this.paint.getHeight(),
+          r:r
+        };
       } else if(this.displayMode == "fit"){
         var x = 0;
         var y = 0;
@@ -121,9 +165,16 @@ class PaintDisplay{
           w = maxW;
           y = (maxH - h) / 2;
         }
+        this.imageData = {
+          x:x,
+          y:y,
+          w:w,
+          h:h,
+          r:r
+        };
         this.paint.background(this.displaying.backgroundColor);
-        this.paint.copyPaintImage(this.displaying, x, y, w, h);
       }
+      this.paint.copyPaintImage(this.displaying, this.imageData.x, this.imageData.y, this.imageData.w, this.imageData.h);
       window.requestAnimationFrame(() => {
         this.refresh();
       });
@@ -188,6 +239,44 @@ class PaintImage{
     p.saveContext();
     p.context.drawImage(this.photo.img, this.x, this.y, this.w, this.h);
     p.restoreContext();
+  }
+}
+
+
+
+class PaintPolygonalTrigger{
+  constructor(points){
+    this.points = points;
+  }
+  containsPoint(x, y){
+    var inside = false;
+    var intersections = 0;
+    var ss;
+    for(var i = 0, j = this.points.length - 1; i < this.points.length; j = i++){
+      var xi = this.points[i][0], yi = this.points[i][1];
+      var xj = this.points[j][0], yj = this.points[j][1];
+      if (yj == yi && yj == y && x > Math.min(xj, xi) && x < Math.max(xj, xi)) {
+        return true;
+      }
+      if (y > Math.min(yj, yi) && y <= Math.max(yj, yi) && x <= Math.max(xj, xi) && yj != yi) {
+        ss = (y - yj) * (xi - xj) / (yi - yj) + xj;
+        if (ss == x) {
+          return true;
+        }
+        if (xj == xi || x <= ss) {
+          intersections++;
+        }
+      }
+    }
+    if(intersections % 2 != 0){
+      return true;
+    } else {
+      return false;
+    }
+  }
+  draw(p){
+    var me = new PaintPolygon(this.points, Color.white);
+    me.draw(p);
   }
 }
 

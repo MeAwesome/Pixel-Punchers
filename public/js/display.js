@@ -2,7 +2,10 @@ function onLoad(){
   fullscreen = false;
   game = new Paint("game");
   gameDisplay = new PaintDisplay("gameDisplay", game);
-  theme = new Wave("/public/sounds/Pixel_Punchers_Theme.mp3");
+  theme = new Howl({
+    src:["/public/sounds/Pixel_Punchers_Theme.mp3"],
+    loop:true
+  });
   squid = new Album();
   squid.addImages("/public/images/squid/", [
     "squid-idle-blue.png",
@@ -24,7 +27,8 @@ function setup(){
   gameDisplay.setDisplayMode("fit");
   title_intro_screen = new PaintScreen("title intro", Color.grey, titleIntroScreen);
   title_screen = new PaintScreen("title", Color.blue, titleScreen);
-  game.setScreen("title intro");
+  //game.setScreen("title intro");
+  game.setScreen("title");
 }
 
 function titleIntroScreen(){
@@ -55,7 +59,8 @@ function titleScreen(){
     title_screen.setBackground(Color.blue);
     title = new PaintText("PIXEL PUNCHERS", 50, 100, Color.white, "Play", 150);
     image = new PaintImage(squid.photo("squid-idle-blue"), 800, 225, 320, 320);
-    title_screen.addObjects([title, image]);
+    test = new PaintPolygonalTrigger([[100, 100],[200, 150], [150, 200], [50, 120]]);
+    title_screen.addObjects([title, image, test]);
     theme.play();
   }
 }
@@ -110,10 +115,27 @@ window.addEventListener("mousedown", (e) => {
   e.preventDefault();
 }, {passive:false});
 window.addEventListener("touchstart", (e) => {
+  console.log(e);
+  gameDisplay.convertTouches(e);
+  if(test != undefined){
+    if(test.containsPoint(gameDisplay.touches[0][0], gameDisplay.touches[0][1])){
+      title_screen.setBackground(Color.orange);
+    } else {
+      title_screen.setBackground(Color.blue);
+    }
+  }
   enterFullscreen();
   e.preventDefault();
 }, {passive:false});
 window.addEventListener("touchmove", (e) => {
+  gameDisplay.convertTouches(e);
+  if(test != undefined){
+    if(test.containsPoint(gameDisplay.touches[0][0], gameDisplay.touches[0][1])){
+      title_screen.setBackground(Color.orange);
+    } else {
+      title_screen.setBackground(Color.blue);
+    }
+  }
 	e.preventDefault();
 }, {passive:false});
 window.addEventListener("touchend", (e) => {
