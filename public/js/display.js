@@ -119,21 +119,3 @@ window.addEventListener("mousedown", (e) => {
   enterFullscreen();
   e.preventDefault();
 }, {passive:false});
-window.addEventListener("touchstart", (e) => {
-  console.log(e);
-  gameDisplay.convertTouches(e);
-  enterFullscreen();
-  e.preventDefault();
-}, {passive:false});
-window.addEventListener("touchmove", (e) => {
-  gameDisplay.convertTouches(e);
-	e.preventDefault();
-}, {passive:false});
-window.addEventListener("touchend", (e) => {
-  gameDisplay.convertTouches(e);
-	e.preventDefault();
-}, {passive:false});
-window.addEventListener("touchcancel", (e) => {
-  gameDisplay.convertTouches(e);
-	e.preventDefault();
-}, {passive:false});
