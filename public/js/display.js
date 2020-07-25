@@ -27,8 +27,7 @@ function setup(){
   gameDisplay.setDisplayMode("fit");
   title_intro_screen = new PaintScreen("title intro", Color.grey, titleIntroScreen);
   title_screen = new PaintScreen("title", Color.blue, titleScreen);
-  //game.setScreen("title intro");
-  game.setScreen("title");
+  game.setScreen("title intro");
 }
 
 function titleIntroScreen(){
