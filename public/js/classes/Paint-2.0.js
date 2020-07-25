@@ -271,6 +271,14 @@ class PaintPolygonalTrigger{
       return false;
     }
   }
+  containsAPoint(points){
+    for(var coord = 0; coord < points.length; coord++){
+      if(this.containsPoint(points[coord][0], points[coord][1])){
+        return true;
+      }
+    }
+    return false;
+  }
   draw(p){
     var me = new PaintPolygon(this.points, Color.white);
     me.draw(p);

@@ -118,7 +118,7 @@ window.addEventListener("touchstart", (e) => {
   console.log(e);
   gameDisplay.convertTouches(e);
   if(test != undefined){
-    if(test.containsPoint(gameDisplay.touches[0][0], gameDisplay.touches[0][1])){
+    if(test.containsAPoint(gameDisplay.touches)){
       title_screen.setBackground(Color.orange);
     } else {
       title_screen.setBackground(Color.blue);
@@ -130,7 +130,7 @@ window.addEventListener("touchstart", (e) => {
 window.addEventListener("touchmove", (e) => {
   gameDisplay.convertTouches(e);
   if(test != undefined){
-    if(test.containsPoint(gameDisplay.touches[0][0], gameDisplay.touches[0][1])){
+    if(test.containsAPoint(gameDisplay.touches)){
       title_screen.setBackground(Color.orange);
     } else {
       title_screen.setBackground(Color.blue);
