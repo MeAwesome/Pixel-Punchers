@@ -27,6 +27,7 @@ function setup(){
   gameDisplay.setDisplayMode("fit");
   title_intro_screen = new PaintScreen("title intro", Color.grey, titleIntroScreen);
   title_screen = new PaintScreen("title", Color.blue, titleScreen);
+  disconnected_screen = new PaintScreen("disconnected", Color.red, disconnectedScreen);
   game.setScreen("title intro");
 }
 
@@ -71,13 +72,20 @@ function titleScreen(){
   }
 }
 
+function disconnectedScreen(){
+  if(disconnected_screen.getTicks() == 0){
+    disconnected_screen.setBackground(Color.red);
+  }
+}
+
 function bindSocketEvents(){
   socket.on("CONNETED_TO_SERVER", () => {
     setup();
   });
 
   socket.on("disconnect", () => {
-    //me.setCurrentScreen("server disconnected");
+    game.setScreen("disconnected");
+    socket.disconnect();
   });
 }
 
