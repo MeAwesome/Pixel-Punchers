@@ -181,6 +181,25 @@ class PaintDisplay{
 
 
 
+class PaintCircle{
+  constructor(x, y, r, c){
+    this.x = x;
+    this.y = y;
+    this.radius = r;
+    this.color = c;
+  }
+  draw(p){
+    p.saveContext();
+    p.setColor(this.color);
+    p.context.beginPath();
+    p.context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+    p.context.fill();
+    p.restoreContext();
+  }
+}
+
+
+
 class PaintPolygon{
   constructor(points, c){
     this.points = points;
@@ -241,6 +260,35 @@ class PaintImage{
 
 
 
+class PaintCircularTrigger{
+  constructor(x, y, r){
+    this.x = x;
+    this.y = y;
+    this.radius = r;
+  }
+  containsPoint(x, y){
+    var distancesquared = (x - this.x) * (x - this.x) + (y - this.y) * (y - this.y);
+    return distancesquared <= this.radius * this.radius;
+  }
+  containsAPoint(points){
+    for(var coord = 0; coord < points.length; coord++){
+      if(this.containsPoint(points[coord][0], points[coord][1])){
+        return true;
+      }
+    }
+    return false;
+  }
+  isActive(p){
+    return this.containsAPoint(p.touches);
+  }
+  draw(p){
+    var me = new PaintCircle(this.x, this.y, this.radius, Color.white);
+    me.draw(p);
+  }
+}
+
+
+
 class PaintPolygonalTrigger{
   constructor(points){
     this.points = points;
@@ -278,6 +326,9 @@ class PaintPolygonalTrigger{
       }
     }
     return false;
+  }
+  isActive(p){
+    return this.containsAPoint(p.touches);
   }
   draw(p){
     var me = new PaintPolygon(this.points, Color.white);

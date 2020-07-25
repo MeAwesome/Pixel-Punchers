@@ -59,9 +59,14 @@ function titleScreen(){
     title_screen.setBackground(Color.blue);
     title = new PaintText("PIXEL PUNCHERS", 50, 100, Color.white, "Play", 150);
     image = new PaintImage(squid.photo("squid-idle-blue"), 800, 225, 320, 320);
-    test = new PaintPolygonalTrigger([[100, 100],[200, 150], [150, 200], [50, 120]]);
+    test = new PaintCircularTrigger(300, 300, 100, gameDisplay);
     title_screen.addObjects([title, image, test]);
     theme.play();
+  }
+  if(test.isActive(gameDisplay)){
+    title_screen.setBackground(Color.orange);
+  } else {
+    title_screen.setBackground(Color.blue);
   }
 }
 
@@ -117,30 +122,18 @@ window.addEventListener("mousedown", (e) => {
 window.addEventListener("touchstart", (e) => {
   console.log(e);
   gameDisplay.convertTouches(e);
-  if(test != undefined){
-    if(test.containsAPoint(gameDisplay.touches)){
-      title_screen.setBackground(Color.orange);
-    } else {
-      title_screen.setBackground(Color.blue);
-    }
-  }
   enterFullscreen();
   e.preventDefault();
 }, {passive:false});
 window.addEventListener("touchmove", (e) => {
   gameDisplay.convertTouches(e);
-  if(test != undefined){
-    if(test.containsAPoint(gameDisplay.touches)){
-      title_screen.setBackground(Color.orange);
-    } else {
-      title_screen.setBackground(Color.blue);
-    }
-  }
 	e.preventDefault();
 }, {passive:false});
 window.addEventListener("touchend", (e) => {
+  gameDisplay.convertTouches(e);
 	e.preventDefault();
 }, {passive:false});
 window.addEventListener("touchcancel", (e) => {
+  gameDisplay.convertTouches(e);
 	e.preventDefault();
 }, {passive:false});
