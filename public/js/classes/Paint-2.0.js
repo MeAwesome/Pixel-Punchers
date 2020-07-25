@@ -282,6 +282,10 @@ class PaintCircularTrigger{
     this.y = y;
     this.radius = r;
   }
+  setPosition(x, y){
+    this.x = x;
+    this.y = y;
+  }
   containsPoint(x, y){
     var distancesquared = (x - this.x) * (x - this.x) + (y - this.y) * (y - this.y);
     return distancesquared <= this.radius * this.radius;
@@ -294,8 +298,20 @@ class PaintCircularTrigger{
     }
     return false;
   }
+  containsPoints(points){
+    var ps = [];
+    for(var coord = 0; coord < points.length; coord++){
+      if(this.containsPoint(points[coord][0], points[coord][1])){
+        ps.push([points[coord][0], points[coord][1]]);
+      }
+    }
+    return ps;
+  }
   isActive(p){
     return this.containsAPoint(p.touches);
+  }
+  activePoints(p){
+    return this.containsPoints(p.touches);
   }
   draw(p){
     var me = new PaintCircle(this.x, this.y, this.radius, Color.white);

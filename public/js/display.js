@@ -64,6 +64,8 @@ function titleScreen(){
   }
   if(test.isActive(gameDisplay)){
     title_screen.setBackground(Color.orange);
+    var points = test.activePoints(gameDisplay);
+    test.setPosition(points[0][0], points[0][1]);
   } else {
     title_screen.setBackground(Color.blue);
   }
