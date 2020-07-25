@@ -111,11 +111,8 @@ class PaintDisplay{
     var y = this.imageData.y;
     var w = this.imageData.w;
     var h = this.imageData.h;
-    var r = this.imageData.r;
     var dw = this.displaying.getWidth();
     var dh = this.displaying.getHeight();
-    var maxW = this.paint.getWidth();
-    var maxH = this.paint.getHeight();
     var rw = dw / w;
     var rh = dh / h;
     for(var coord = 0; coord < e.touches.length; coord++){
