@@ -34,23 +34,18 @@ function setup(){
 function titleIntroScreen(){
   if(title_intro_screen.getTicks() == 0){
     title_intro_screen.setBackground(Color.grey);
-    title_intro_screen.setMaxTicks(400, game, "title");
+    title = new PaintText("PIXEL PUNCHERS", 640, 75, Color.white, "Play", 150, "center xy");
+    image = new PaintImage(squid.photo("squid-idle-blue"), 480, 160, 320, 320);
+    start = new PaintText("CLICK ANYWHERE TO START", 640, 600, Color.white, "Play", 50, "center xy");
+    title_intro_screen.addObjects([title, image, start]);
   }
-  if(title_intro_screen.getTicks() == 50){
-    pixel = new PaintText("PIXEL", 400, 200, Color.white, "Play", 200);
-    title_intro_screen.addObject(pixel);
+  if(title_intro_screen.getTicks() % 50 >= 25){
+    start.setColor(Color.white);
+  } else {
+    start.setColor(Color.blue);
   }
-  if(title_intro_screen.getTicks() == 100){
-    punchers = new PaintText("PUNCHERS", 150, 500, Color.white, "Play", 200);
-    title_intro_screen.addObject(punchers);
-  }
-  if(title_intro_screen.getTicks() == 200){
-    image = new PaintImage(squid.photo("squid-idle-blue"), 0, 720, 320, 320);
-    title_intro_screen.addObject(image);
-  }
-  if(title_intro_screen.getTicks() >= 200){
-    image.x +=5;
-    image.y -= 5;
+  if(gameDisplay.touched()){
+    game.setScreen("title");
   }
 }
 

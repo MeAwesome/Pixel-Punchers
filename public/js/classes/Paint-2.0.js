@@ -139,6 +139,12 @@ class PaintDisplay{
       }
     }
   }
+  touched(){
+    if(this.touches.length > 0){
+      return true;
+    }
+    return false;
+  }
   refresh(){
     if(this.dynamic){
       this.paint.clear();
@@ -248,10 +254,20 @@ class PaintText{
     this.alignment = alignment || "normal";
     this.rotation = rotation || 0;
   }
+  setColor(c){
+    this.color = c;
+  }
   draw(p){
     p.saveContext();
     p.context.font = this.size + "px " + this.font;
     p.context.fillStyle = this.color;
+    if(this.alignment == "normal"){
+      p.context.textAlign = "start";
+      p.context.textBaseline = "alphabetic";
+    } else if(this.alignment == "center xy"){
+      p.context.textAlign = "center";
+      p.context.textBaseline = "middle";
+    }
     p.context.fillText(this.text, this.x, this.y);
     p.restoreContext();
   }
