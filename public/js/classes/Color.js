@@ -12,6 +12,7 @@ const Color = {
   lightblue:"#007FFF",
   teal:"#00FFFF",
   purple:"#8B008B",
+  magenta:"#FF00FF",
   felicity:"#008000",
   toHex:function(rgb){
     var hex = Number(rgb).toString(16);

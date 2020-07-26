@@ -4,7 +4,7 @@ window.onload = function(){
   if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
   	deviceScript.src = "/public/js/phone.js";
   } else {
-  	deviceScript.src = "/public/js/display.js";
+  	deviceScript.src = "/public/js/phone.js";
   }
   deviceScript.onload = function(){
     onLoad();

@@ -4,6 +4,7 @@ class Paint{
   constructor(id){
     this.id = id;
     this.screen = undefined;
+    this.fadingToScreen = false;
     this.backgroundColor = Color.black;
     this.canvas = document.createElement("canvas");
     this.canvas.id = id;
@@ -226,6 +227,29 @@ class PaintCircle{
 
 
 
+class PaintRectangle{
+  constructor(x, y, w, h, c){
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    this.color = c;
+    this.transparency = 1.0;
+  }
+  setTransparency(t){
+    this.transparency = t;
+  }
+  draw(p){
+    p.saveContext();
+    p.setColor(this.color);
+    p.context.globalAlpha = this.transparency;
+    p.context.fillRect(this.x, this.y, this.w, this.h);
+    p.restoreContext();
+  }
+}
+
+
+
 class PaintPolygon{
   constructor(points, c){
     this.points = points;
@@ -297,14 +321,18 @@ class PaintImage{
 
 
 class PaintCircularTrigger{
-  constructor(x, y, r){
+  constructor(x, y, r, c){
     this.x = x;
     this.y = y;
     this.radius = r;
+    this.color = c;
   }
   setPosition(x, y){
     this.x = x;
     this.y = y;
+  }
+  setColor(c){
+    this.color = c;
   }
   containsPoint(x, y){
     var distancesquared = (x - this.x) * (x - this.x) + (y - this.y) * (y - this.y);
@@ -334,7 +362,7 @@ class PaintCircularTrigger{
     return this.containsPoints(p.touches);
   }
   draw(p){
-    var me = new PaintCircle(this.x, this.y, this.radius, Color.white);
+    var me = new PaintCircle(this.x, this.y, this.radius, this.color);
     me.draw(p);
   }
 }
@@ -342,8 +370,12 @@ class PaintCircularTrigger{
 
 
 class PaintPolygonalTrigger{
-  constructor(points){
+  constructor(points, c){
     this.points = points;
+    this.color = c;
+  }
+  setColor(c){
+    this.color = c;
   }
   containsPoint(x, y){
     var inside = false;
@@ -383,7 +415,7 @@ class PaintPolygonalTrigger{
     return this.containsAPoint(p.touches);
   }
   draw(p){
-    var me = new PaintPolygon(this.points, Color.white);
+    var me = new PaintPolygon(this.points, this.color);
     me.draw(p);
   }
 }

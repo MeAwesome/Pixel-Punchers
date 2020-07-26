@@ -33,7 +33,8 @@ function setup(){
   hudDisplay.setZIndex(1);
   hudDisplay.setVisibility(false);
   title_screen = new PaintScreen("title", Color.grey, titleScreen);
-  main_menu_screen = new PaintScreen("main menu", Color.blue, mainMenuScreen);
+  main_menu_screen = new PaintScreen("main menu", Color.grey, mainMenuScreen);
+  fight_menu_screen = new PaintScreen("fight menu", Color.grey, fightMenuScreen);
   disconnected_screen = new PaintScreen("disconnected", Color.red, disconnectedScreen);
   game.setScreen("title");
 }
@@ -58,19 +59,44 @@ function titleScreen(){
 
 function mainMenuScreen(){
   if(main_menu_screen.getTicks() == 0){
-    main_menu_screen.setBackground(Color.blue);
-    title = new PaintText("PIXEL PUNCHERS", 50, 100, Color.white, "Play", 150);
-    image = new PaintImage(squid.photo("squid-idle-blue"), 800, 225, 320, 320);
-    test = new PaintCircularTrigger(300, 300, 100, gameDisplay);
-    main_menu_screen.addObjects([title, image, test]);
-    theme.play();
+    main_menu_screen.setBackground(Color.grey);
+    fight_button = new PaintPolygonalTrigger([[100, 50], [600, 100], [600, 250], [100, 300]], Color.red);
+    friends_button = new PaintPolygonalTrigger([[100, 420], [600, 470], [600, 620], [100, 670]], Color.green);
+    extras_button = new PaintPolygonalTrigger([[1180, 50], [680, 100], [680, 250], [1180, 300]], Color.blue);
+    settings_button = new PaintPolygonalTrigger([[1180, 420], [680, 470], [680, 620], [1180, 670]], Color.magenta);
+    title = new PaintText("PIXEL PUNCHERS", 640, 360, Color.white, "Play", 75, "center xy");
+    main_menu_screen.addObjects([fight_button, friends_button, extras_button, settings_button, title]);
+    //theme.play();
   }
-  if(test.isActive(gameDisplay)){
-    main_menu_screen.setBackground(Color.orange);
-    var points = test.activePoints(gameDisplay);
-    test.setPosition(points[0][0], points[0][1]);
+  if(fight_button.isActive(gameDisplay)){
+    fight_button.setColor(Color.white);
   } else {
-    main_menu_screen.setBackground(Color.blue);
+    fight_button.setColor(Color.red);
+  }
+  if(friends_button.isActive(gameDisplay)){
+    friends_button.setColor(Color.white);
+  } else {
+    friends_button.setColor(Color.green);
+  }
+  if(extras_button.isActive(gameDisplay)){
+    extras_button.setColor(Color.white);
+  } else {
+    extras_button.setColor(Color.blue);
+  }
+  if(settings_button.isActive(gameDisplay)){
+    settings_button.setColor(Color.white);
+  } else {
+    settings_button.setColor(Color.magenta);
+  }
+}
+
+function fightMenuScreen(){
+  if(fight_menu_screen.getTicks() == 0){
+    fight_menu_screen.setBackground(Color.grey);
+    join_room_menu_button = new PaintCircularTrigger(320, 360, 140, Color.red);
+    create_room_menu_button = new PaintCircularTrigger(960, 360, 140, Color.blue);
+    fight_menu_screen.addObjects([join_room_menu_button, create_room_menu_button]);
+    //theme.play();
   }
 }
 
@@ -149,9 +175,9 @@ if (typeof document.hidden !== "undefined") {
 
 function handleVisibilityChange(){
   if(document[hidden]){
-    theme.pause();
+    //theme.pause();
   } else {
-    theme.play();
+    //theme.play();
   }
 }
 
