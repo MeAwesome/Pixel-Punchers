@@ -78,6 +78,7 @@ class PaintDisplay{
       r:undefined
     };
     this.paint.setVisibility(true);
+    this.paint.canvas.style.position = "absolute";
     this.paint.canvas.addEventListener("touchstart", (e) => {
       this.convertTouches(e);
       e.preventDefault();
@@ -120,6 +121,9 @@ class PaintDisplay{
     } else {
       this.displayMode = "fit";
     }
+  }
+  setZIndex(z){
+    this.paint.canvas.style.zIndex = z;
   }
   convertTouches(e){
     this.touches = [];

@@ -1,7 +1,9 @@
 function onLoad(){
   noSleep = new NoSleep();
   game = new Paint("game");
+  hud = new Paint("hud");
   gameDisplay = new PaintDisplay("gameDisplay", game);
+  hudDisplay = new PaintDisplay("hudDisplay", hud);
   theme = new Howl({
     src:["/public/sounds/Pixel_Punchers_Theme.mp3"],
     loop:true
@@ -23,47 +25,52 @@ function onLoad(){
 
 function setup(){
   game.setSize(1280, 720);
+  hud.setSize(window.innerWidth, window.innerHeight);
   gameDisplay.setSize(window.innerWidth, window.innerHeight);
   gameDisplay.setDisplayMode("fit");
-  title_intro_screen = new PaintScreen("title intro", Color.grey, titleIntroScreen);
-  title_screen = new PaintScreen("title", Color.blue, titleScreen);
+  gameDisplay.setZIndex(0);
+  hudDisplay.setSize(window.innerWidth, window.innerHeight);
+  hudDisplay.setZIndex(1);
+  hudDisplay.setVisibility(false);
+  title_screen = new PaintScreen("title", Color.grey, titleScreen);
+  main_menu_screen = new PaintScreen("main menu", Color.blue, mainMenuScreen);
   disconnected_screen = new PaintScreen("disconnected", Color.red, disconnectedScreen);
-  game.setScreen("title intro");
+  game.setScreen("title");
 }
 
-function titleIntroScreen(){
-  if(title_intro_screen.getTicks() == 0){
-    title_intro_screen.setBackground(Color.grey);
+function titleScreen(){
+  if(title_screen.getTicks() == 0){
+    title_screen.setBackground(Color.grey);
     title = new PaintText("PIXEL PUNCHERS", 640, 75, Color.white, "Play", 150, "center xy");
     image = new PaintImage(squid.photo("squid-idle-blue"), 480, 160, 320, 320);
-    start = new PaintText("CLICK ANYWHERE TO START", 640, 600, Color.white, "Play", 50, "center xy");
-    title_intro_screen.addObjects([title, image, start]);
+    start = new PaintText("PRESS ANYTHING TO START", 640, 600, Color.white, "Play", 50, "center xy");
+    title_screen.addObjects([title, image, start]);
   }
-  if(title_intro_screen.getTicks() % 50 >= 25){
+  if(title_screen.getTicks() % 50 >= 25){
     start.setColor(Color.white);
   } else {
     start.setColor(Color.blue);
   }
   if(gameDisplay.touched()){
-    game.setScreen("title");
+    game.setScreen("main menu");
   }
 }
 
-function titleScreen(){
-  if(title_screen.getTicks() == 0){
-    title_screen.setBackground(Color.blue);
+function mainMenuScreen(){
+  if(main_menu_screen.getTicks() == 0){
+    main_menu_screen.setBackground(Color.blue);
     title = new PaintText("PIXEL PUNCHERS", 50, 100, Color.white, "Play", 150);
     image = new PaintImage(squid.photo("squid-idle-blue"), 800, 225, 320, 320);
     test = new PaintCircularTrigger(300, 300, 100, gameDisplay);
-    title_screen.addObjects([title, image, test]);
+    main_menu_screen.addObjects([title, image, test]);
     theme.play();
   }
   if(test.isActive(gameDisplay)){
-    title_screen.setBackground(Color.orange);
+    main_menu_screen.setBackground(Color.orange);
     var points = test.activePoints(gameDisplay);
     test.setPosition(points[0][0], points[0][1]);
   } else {
-    title_screen.setBackground(Color.blue);
+    main_menu_screen.setBackground(Color.blue);
   }
 }
 
@@ -112,9 +119,13 @@ function exitFullscreen() {
 
 window.addEventListener("resize", () => {
   gameDisplay.setSize(window.innerWidth, window.innerHeight);
+  hud.setSize(window.innerWidth, window.innerHeight);
+  hudDisplay.setSize(window.innerWidth, window.innerHeight);
 }, {passive:false});
 window.addEventListener("orientationchange", () => {
   gameDisplay.setSize(window.innerWidth, window.innerHeight);
+  hud.setSize(window.innerWidth, window.innerHeight);
+  hudDisplay.setSize(window.innerWidth, window.innerHeight);
 }, {passive:false});
 window.addEventListener("keydown", (e) => {
   enterFullscreen();
