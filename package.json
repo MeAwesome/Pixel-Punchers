@@ -11,7 +11,7 @@
     "node": "13.10.x"
   },
   "scripts": {
-    "start": "node ./src/app.js"
+    "start": "node ./src/server.js"
   },
   "author": "Isaac Robbins",
   "license": "MIT"
