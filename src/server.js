@@ -9,7 +9,6 @@ const port = process.env.PORT || 52470;
 
 //Custom Requires
 
-const _ = require("underscore");
 const { Connection, Connections } = require("./server/classes/Connections.js");
 
 //Server Setup & Initiation

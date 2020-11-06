@@ -5,11 +5,11 @@ function onLoad(){
   gameDisplay = new PaintDisplay("gameDisplay", game);
   hudDisplay = new PaintDisplay("hudDisplay", hud);
   theme = new Howl({
-    src:["/public/sounds/Pixel_Punchers_Theme.mp3"],
+    src: ["/src/public/sounds/Pixel_Punchers_Theme.mp3"],
     loop:true
   });
   squid = new Album();
-  squid.addImages("/public/images/squid/", [
+  squid.addImages("/src/public/images/squid/", [
     "squid-idle-blue.png",
     "squid-idle-green.png",
     "squid-idle-grey.png",
