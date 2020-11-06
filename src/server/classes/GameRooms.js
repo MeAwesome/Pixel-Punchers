@@ -2,8 +2,11 @@ class GameRoom {
     constructor() {
         this.data = {
             metadata: {
-                code: undefined
-            }
+                code: undefined,
+                maxConnections: 4,
+                private: false
+            },
+            connections:{}
         }
     }
     setRoomCode(code) {
@@ -11,6 +14,12 @@ class GameRoom {
     }
     getRoomCode() {
         return this.data.metadata.code;
+    }
+    addConnection(connection){
+        this.data.connections[connection.getId()] = connection;
+    }
+    removeConnection(connection){
+        delete this.data.connections[connection.getId()];
     }
 }
 
@@ -22,6 +31,9 @@ class GameRooms {
         var newGeneratedRoom = new GameRoom();
         newGeneratedRoom.setRoomCode(generateRoomCode(4, false));
         this.rooms[newGeneratedRoom.getRoomCode()] = newGeneratedRoom;
+    }
+    getRoom(code) {
+        return this.rooms[code];
     }
     deleteRoom(room) {
         delete this.rooms[room.getRoomCode()];
