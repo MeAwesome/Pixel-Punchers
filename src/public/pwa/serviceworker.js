@@ -1,7 +1,7 @@
 const CACHE_NAME = "PixelPunchersCache";
 
 const FILES_TO_CACHE = [
-  "/src/"
+  
 ];
 
 if("serviceWorker" in navigator){
@@ -9,6 +9,7 @@ if("serviceWorker" in navigator){
     navigator.serviceWorker.register("/src/public/pwa/serviceworker.js")
       .then((reg) => {
         registration = reg;
+        console.log(registration.scope)
       }).catch(function(err){
 
       });
