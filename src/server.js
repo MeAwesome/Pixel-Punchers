@@ -10,6 +10,7 @@ const port = process.env.PORT || 52470;
 //Custom Requires
 
 const { Connection, Connections } = require("./server/classes/Connections.js");
+const { GameRoom, GameRooms } = require("./server/classes/GameRooms.js");
 
 //Server Setup & Initiation
 
@@ -26,6 +27,7 @@ if(port != process.env.PORT){
 }
 
 const CONNECTIONS = new Connections();
+const ROOMS = new GameRooms();
 
 //Connection & Message Handling
 
@@ -34,7 +36,7 @@ io.on("connection", (socket) => {
 	CONNECTIONS.addConnection(new Connection(socket));
 
 	socket.on("disconnect", () => {
-		
+		CONNECTIONS.removeConnection(socket.id);
 	});
 
 });

@@ -1,6 +1,6 @@
 class GameRoom {
     constructor() {
-        this.data = {
+        this.roomdata = {
             metadata: {
                 code: undefined,
                 maxConnections: 4,
@@ -10,16 +10,16 @@ class GameRoom {
         }
     }
     setRoomCode(code) {
-        this.data.metadata.code = code;
+        this.roomdata.metadata.code = code;
     }
     getRoomCode() {
-        return this.data.metadata.code;
+        return this.roomdata.metadata.code;
     }
     addConnection(connection){
-        this.data.connections[connection.getId()] = connection;
+        this.roomdata.connections[connection.getId()] = connection;
     }
     removeConnection(connection){
-        delete this.data.connections[connection.getId()];
+        delete this.roomdata.connections[connection.getId()];
     }
 }
 
@@ -56,3 +56,8 @@ class GameRooms {
         return generatedCode;
     }
 }
+
+module.exports = {
+    GameRoom: GameRoom,
+    GameRooms: GameRooms
+};
