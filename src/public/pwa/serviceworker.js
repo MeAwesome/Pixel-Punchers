@@ -6,10 +6,11 @@ const FILES_TO_CACHE = [
 
 if("serviceWorker" in navigator){
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/src/public/pwa/serviceworker.js")
+    navigator.serviceWorker.register("/src/public/pwa/serviceworker.js", {
+      scope: '/src/public/'
+    })
       .then((reg) => {
         registration = reg;
-        console.log(registration.scope);
       }).catch(function(err){
 
       });
