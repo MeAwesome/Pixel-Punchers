@@ -32,6 +32,7 @@ function setup(){
   }
 
   game = new Phaser.Game(config);
+  game.scene.start("BootGame");
 
   socket = io();
   bindSocketEvents();
