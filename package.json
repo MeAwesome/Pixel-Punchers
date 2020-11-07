@@ -1,7 +1,7 @@
 {
   "name": "pixel-punchers",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "src/server.js",
   "dependencies": {
     "express": "^4.17.1",
     "phaser": "^3.24.1",
