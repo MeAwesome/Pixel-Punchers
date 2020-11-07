@@ -15,7 +15,7 @@ const { GameRoom, GameRooms } = require(__dirname + "/server/classes/GameRooms.j
 //Server Setup & Initiation
 
 app.get("/", (req, res) => {
-	res.sendFile(__dirname + "/public/index.html", { headers: { "Service-Worker-Allow" : "/" } });
+	res.sendFile(__dirname + "/public/index.html", { headers: { "Service-Worker-Allowed" : "/" } });
 });
 app.use("/src/public", express.static(__dirname + "/public"));
 serv.listen(port);
