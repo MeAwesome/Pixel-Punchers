@@ -11,7 +11,6 @@ if("serviceWorker" in navigator){
     })
       .then((reg) => {
         registration = reg;
-        console.log(registration.scope);
       }).catch(function(err){
 
       });
