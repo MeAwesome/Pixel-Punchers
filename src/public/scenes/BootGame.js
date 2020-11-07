@@ -9,6 +9,8 @@ export default class BootGame extends Phaser.Scene {
 
         new NoSleep();
 
+        this.load.setBaseURL(window.origin);
+
         var images = ["squid-idle-blue", "squid-idle-red", "squid-idle-green", "squid-idle-yellow", "squid-idle-orange", "squid-idle-pink", "squid-idle-purple", "squid-idle-grey"]
         images.forEach(img => {
             this.load.image(img, `src/public/assets/img/squid/${img}.png`)
