@@ -3,18 +3,26 @@ export default class BootGame extends Phaser.Scene {
         super("BootGame");
     }
     preload(){
-        this.add.text(20, 20, "Loading game...");
-
-        this.add.circle(300, 300, 500, Color.red);
-
         new NoSleep();
 
-        this.load.setBaseURL(window.origin);
+        this.cameras.main.setBounds(0, 0, 1280, 720)
+
+        //const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
+        //const screenCenterY = this.cameras.main.worldView.y + this.cameras.main.height / 2;
+
+        this.add.text(20, this.cameras.main.height - 20, "Loading...", {
+            font: "bold 32px Arial",
+            fill: "#fff"
+        }).setOrigin(0, 1);
+
+        this.load.setBaseURL(window.origin + "/src/public");
 
         var images = ["squid-idle-blue", "squid-idle-red", "squid-idle-green", "squid-idle-yellow", "squid-idle-orange", "squid-idle-pink", "squid-idle-purple", "squid-idle-grey"]
         images.forEach(img => {
-            this.load.image(img, `src/public/assets/img/squid/${img}.png`)
+            this.load.image(img, `assets/img/squid/${img}.png`)
         })
+
+        this.load.image("fight", `assets/img/buttons/fight.png`);
     }
     create() {
         this.scene.start("LaunchScreen");
