@@ -22,10 +22,12 @@ export default class LaunchScreen extends Phaser.Scene {
         this.fightButton.on("pointerout", () => {
             this.unhighlightButton(this.fightButton);
         })
-        this.fightButton.on("pointerup", this.clickButton);
-        
-        this.cameras.main.setBackgroundColor(Color.blue)
-        this.cameras.main.fadeIn()
+        this.fightButton.on("pointerup", () => {
+            this.clickFightButton();
+        });
+
+        this.cameras.main.setBackgroundColor(Color.blue);
+        this.cameras.main.fadeIn();
     }
     update(){
         this.refreshPositions();
@@ -36,8 +38,18 @@ export default class LaunchScreen extends Phaser.Scene {
     unhighlightButton(button) {
         button.setScale(0.4);
     }
-    clickButton(){
-        console.log("press");
+    clickFightButton(){
+        this.cameras.main.fadeOut(200, 0, 0, 0, this.switchScene, this);
+        if(this.sys.game.device.os.desktop){
+            console.log("desktop");
+        } else {
+            console.log("mobile");
+        }
+    }
+    switchScene(camera, completion){
+        if(completion == 1){
+            this.scene.start("FightScreen")
+        }
     }
     refreshPositions(){
         this.screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;

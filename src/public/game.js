@@ -1,6 +1,7 @@
 import "./js/phaser.min.js";
 import BootGame from "./scenes/BootGame.js";
 import LaunchScreen from "./scenes/LaunchScreen.js";
+import FightScreen from "./scenes/FightScreen.js";
 
 const DEFAULT_WIDTH = 1280;
 const DEFAULT_HEIGHT = 720;
@@ -21,7 +22,7 @@ function setup(){
       width: DEFAULT_WIDTH,
       height: DEFAULT_HEIGHT
     },
-    scene: [BootGame, LaunchScreen],
+    scene: [BootGame, LaunchScreen, FightScreen],
     physics: {
       default: 'arcade',
       arcade: {
