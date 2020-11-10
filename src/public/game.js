@@ -88,7 +88,6 @@ function bindSocketEvents() {
   });
 
   socket.on("disconnect", () => {
-    game.setScreen("disconnected");
     socket.disconnect();
   });
 }

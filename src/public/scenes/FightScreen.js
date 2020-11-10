@@ -12,7 +12,7 @@ export default class FightScreen extends Phaser.Scene {
         this.refreshPositions();
 
         this.cameras.main.setBackgroundColor(Color.blue);
-        this.cameras.main.fadeIn(200);
+        this.cameras.main.fadeIn(100);
     }
     update(){
         this.refreshPositions();
