@@ -6,9 +6,10 @@ export default class LaunchScreen extends Phaser.Scene {
         this.screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
         this.screenCenterY = this.cameras.main.worldView.y + this.cameras.main.height / 2;
 
-        this.squid = this.add.image(300, this.screenCenterY, "squid-idle-blue").setOrigin(0.5);
-        this.circle = this.add.circle(this.cameras.main.width, this.screenCenterY, 800, Color.white);
-        this.fightButton = this.add.image(this.cameras.main.width, this.screenCenterY - 200, "fight").setOrigin(1, 0.5).setScale(0.4).setInteractive();
+        this.squid = this.add.image(this.screenCenterX / 2, this.screenCenterY, "squid-idle-blue").setOrigin(0.5);
+        this.circle = this.add.circle(this.cameras.main.width, this.screenCenterY, this.cameras.main.width / 2, Color.white);
+        this.fightButton = this.add.image(this.cameras.main.width, 0, "fight").setScale(0.4).setOrigin(1, 0).setInteractive();
+        //this.fightButton2 = this.add.image(this.cameras.main.width, this.screenCenterY - 200, "fight").setOrigin(1, 1).setScale(0.4).setInteractive();
     }
     create() {
         this.refreshPositions();
@@ -27,7 +28,7 @@ export default class LaunchScreen extends Phaser.Scene {
         });
 
         this.cameras.main.setBackgroundColor(Color.blue);
-        this.cameras.main.fadeIn();
+        this.cameras.main.fadeIn(300);
     }
     update(){
         this.refreshPositions();
@@ -39,7 +40,7 @@ export default class LaunchScreen extends Phaser.Scene {
         button.setScale(0.4);
     }
     clickFightButton(){
-        this.cameras.main.fadeOut(200, 0, 0, 0, this.switchScene, this);
+        this.cameras.main.fadeOut(100, 0, 0, 0, this.switchScene, this);
         if(this.sys.game.device.os.desktop){
             console.log("desktop");
         } else {
@@ -54,8 +55,8 @@ export default class LaunchScreen extends Phaser.Scene {
     refreshPositions(){
         this.screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
         this.screenCenterY = this.cameras.main.worldView.y + this.cameras.main.height / 2;
-        this.squid.setPosition(300, this.screenCenterY);
-        this.circle.setPosition(this.cameras.main.width, this.screenCenterY);
-        this.fightButton.setPosition(this.cameras.main.width, this.screenCenterY - 200);
+        this.squid.setPosition(this.screenCenterX / 2, this.screenCenterY);
+        this.circle.setPosition(this.cameras.main.width, this.screenCenterY).setRadius(this.cameras.main.width / 2);
+        this.fightButton.setPosition(this.cameras.main.width, 0);
     }
 }
