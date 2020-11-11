@@ -9,6 +9,11 @@ export default class MenuButton extends Phaser.GameObjects.Image {
 
         this.on("pointerover", () => {
             this.highlight();
+            this.isActive = true;
+        });
+        this.on("pointermove", () => {
+            this.highlight();
+            this.isActive = true;
         });
         this.on("pointerdown", () => {
             this.highlight();
@@ -19,6 +24,7 @@ export default class MenuButton extends Phaser.GameObjects.Image {
             this.isActive = false;
         });
         this.on("pointerup", () => {
+            this.unhighlight();
             this.isActive = false;
         });
 

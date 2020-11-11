@@ -9,6 +9,8 @@ export default class ControllerScreen extends Phaser.Scene {
         this.screenCenterY = this.cameras.main.worldView.y + this.cameras.main.height / 2;
         this.leftButton = new MenuButton(this, 100, this.screenCenterY, "fight");
         this.rightButton = new MenuButton(this, this.cameras.main.width - 100, this.screenCenterY, "fight");
+
+        this.input.addPointer(2);
     }
     create() {
         this.cameras.main.setBackgroundColor(Color.grey);
@@ -17,7 +19,8 @@ export default class ControllerScreen extends Phaser.Scene {
     update() {
         if(this.leftButton.isActive){
             this.game.socket.emit("left");
-        } else if(this.rightButton.isActive){
+        }
+        if(this.rightButton.isActive){
             this.game.socket.emit("right");
         }
     }
