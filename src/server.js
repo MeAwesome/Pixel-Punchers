@@ -43,4 +43,12 @@ io.on("connection", (socket) => {
 		CONNECTIONS.removeConnection(socket.id);
 	});
 
+	socket.on("left", () => {
+		io.emit("move-left");
+	});
+
+	socket.on("right", () => {
+		io.emit("move-right");
+	});
+
 });

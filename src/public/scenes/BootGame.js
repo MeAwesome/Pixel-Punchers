@@ -5,12 +5,7 @@ export default class BootGame extends Phaser.Scene {
     preload(){
         new NoSleep();
 
-        this.cameras.main.setBounds(0, 0, 1280, 720)
-
-        //const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
-        //const screenCenterY = this.cameras.main.worldView.y + this.cameras.main.height / 2;
-
-        this.add.text(20, this.cameras.main.height - 20, "Loading...", {
+        this.text = this.add.text(20, this.cameras.main.height - 20, "Loading...", {
             font: "bold 32px Arial",
             fill: "#fff"
         }).setOrigin(0, 1);
@@ -26,5 +21,8 @@ export default class BootGame extends Phaser.Scene {
     }
     create() {
         this.scene.start("LaunchScreen");
+    }
+    resize(){
+        this.text.setPosition(20, this.cameras.main.height - 20);
     }
 }

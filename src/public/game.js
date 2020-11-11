@@ -2,13 +2,15 @@ import "./js/phaser.min.js";
 import BootGame from "./scenes/BootGame.js";
 import LaunchScreen from "./scenes/LaunchScreen.js";
 import FightScreen from "./scenes/FightScreen.js";
+import PlayScreen from "./scenes/PlayScreen.js";
+import ControllerScreen from "./scenes/ControllerScreen.js";
 
 const DEFAULT_WIDTH = 1280;
 const DEFAULT_HEIGHT = 720;
 const MAX_WIDTH = DEFAULT_WIDTH * 1.5;
 const MAX_HEIGHT = DEFAULT_HEIGHT * 1.5;
 
-var game, socket;
+var game;
 
 window.addEventListener('load', setup);
 
@@ -22,7 +24,7 @@ function setup(){
       width: DEFAULT_WIDTH,
       height: DEFAULT_HEIGHT
     },
-    scene: [BootGame, LaunchScreen, FightScreen],
+    scene: [BootGame, LaunchScreen, FightScreen, PlayScreen, ControllerScreen],
     physics: {
       default: 'arcade',
       arcade: {
@@ -35,7 +37,7 @@ function setup(){
   game = new Phaser.Game(config);
   game.scene.start("BootGame");
 
-  socket = io();
+  game.socket = io();
   bindSocketEvents();
 
   window.addEventListener('resize', event => {
@@ -76,6 +78,10 @@ function resize(){
 
   game.canvas.style.marginTop = `${(h - newHeight * scale) / 2}px`;
   game.canvas.style.marginLeft = `${(w - newWidth * scale) / 2}px`;
+
+  game.scene.getScenes().forEach((scene) => {
+    scene.resize();
+  });
 }
 
 function normalize(value, min, max){
@@ -83,11 +89,11 @@ function normalize(value, min, max){
 }
 
 function bindSocketEvents() {
-  socket.on("CONNETED_TO_SERVER", () => {
+  game.socket.on("CONNETED_TO_SERVER", () => {
     //setup();
   });
 
-  socket.on("disconnect", () => {
-    socket.disconnect();
+  game.socket.on("disconnect", () => {
+    game.socket.disconnect();
   });
 }

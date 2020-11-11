@@ -1,0 +1,33 @@
+export default class MenuButton extends Phaser.GameObjects.Image {
+    constructor(scene, x, y, texture){
+        super(scene, x, y, texture);
+
+        this.setScale(0.4);
+        this.setInteractive();
+
+        this.isActive = false;
+
+        this.on("pointerover", () => {
+            this.highlight();
+        });
+        this.on("pointerdown", () => {
+            this.highlight();
+            this.isActive = true;
+        });
+        this.on("pointerout", () => {
+            this.unhighlight();
+            this.isActive = false;
+        });
+        this.on("pointerup", () => {
+            this.isActive = false;
+        });
+
+        scene.add.existing(this);
+    }
+    highlight() {
+        this.setScale(0.5);
+    }
+    unhighlight() {
+        this.setScale(0.4);
+    }
+}
