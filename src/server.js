@@ -51,4 +51,12 @@ io.on("connection", (socket) => {
 		io.emit("move-right");
 	});
 
+	socket.on("up", () => {
+		io.emit("move-up");
+	});
+
+	socket.on("down", () => {
+		io.emit("move-down");
+	});
+
 });

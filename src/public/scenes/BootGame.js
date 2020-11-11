@@ -18,6 +18,8 @@ export default class BootGame extends Phaser.Scene {
         })
 
         this.load.image("fight", `assets/img/buttons/fight.png`);
+        this.load.image("arrow", `assets/img/buttons/arrow.svg`);
+        this.load.image("box", `assets/img/tiles/box.svg`);
     }
     create() {
         this.scene.start("LaunchScreen");
