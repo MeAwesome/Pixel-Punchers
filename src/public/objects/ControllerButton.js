@@ -1,28 +1,23 @@
 export default class ControllerButton extends Phaser.GameObjects.Image {
-    constructor(scene, x, y, texture, messageToEmit){
+    constructor(scene, x, y, texture){
         super(scene, x, y, texture);
 
         this.setScale(0.2);
         this.setInteractive();
 
         this.isActive = false;
-        this.socket = scene.game.socket;
-        this.emitMessage = messageToEmit;
 
         this.on("pointerover", () => {
             this.highlight();
             this.isActive = true;
-            this.socket.emit(this.emitMessage);
         });
         this.on("pointermove", () => {
             this.highlight();
             this.isActive = true;
-            this.socket.emit(this.emitMessage);
         });
         this.on("pointerdown", () => {
             this.highlight();
             this.isActive = true;
-            this.socket.emit(this.emitMessage);
         });
         this.on("pointerout", () => {
             this.unhighlight();
